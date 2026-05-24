@@ -38,15 +38,11 @@
   "penanda_rute": {
     "titik_awal": {
       "label": "bendera_merah",
-      "id_node_referensi": "node_01",
-      "x": -920,
-      "y": -780
+      "id_node_referensi": "node_01"
     },
     "titik_akhir": {
       "label": "bendera_hijau",
-      "id_node_referensi": "node_10",
-      "x": 940,
-      "y": 810
+      "id_node_referensi": "node_10"
     }
   }
 }
