@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medieval City Simulation — WebGL</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Base ───────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --parchment:    #c8a96e;
+      --ink:          #1a120b;
+      --ink-light:    #2e1e0f;
+      --gold:         #d4a843;
+      --gold-dim:     #8a6820;
+      --ember:        #b84a1a;
+      --moss:         #3d5c2a;
+      --panel-bg:     rgba(14, 9, 4, 0.82);
+      --panel-border: rgba(180, 130, 50, 0.45);
+      --panel-glow:   rgba(180, 130, 50, 0.08);
+      --btn-h:        40px;
+      --radius:       3px;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #0b0705;
+      cursor: crosshair;
+    }
+
+    /* ── Canvas ─────────────────────────────────────────── */
+    #webgl-canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      inset: 0;
+    }
+
+    /* ── UI Overlay Panel ───────────────────────────────── */
+    #ui-panel {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 100;
+      width: 210px;
+
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius);
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.6),
+        0 8px 32px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(210, 160, 60, 0.12),
+        0 0 40px var(--panel-glow);
+
+      backdrop-filter: blur(12px) saturate(0.6);
+      -webkit-backdrop-filter: blur(12px) saturate(0.6);
+
+      padding: 0;
+      overflow: hidden;
+
+      animation: panel-arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes panel-arrive {
+      from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)     scale(1);    }
+    }
+
+    /* ── Panel Header ───────────────────────────────────── */
+    .panel-header {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--panel-border);
+      position: relative;
+    }
+
+    .panel-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 16px; right: 16px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.4;
+    }
+
+    .panel-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.9;
+    }
+
+    .panel-subtitle {
+      font-family: 'Crimson Pro', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: rgba(200, 169, 110, 0.5);
+      margin-top: 2px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Button Group ───────────────────────────────────── */
+    .btn-group {
+      padding: 12px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ── Base Button ────────────────────────────────────── */
+    .btn {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      height: var(--btn-h);
+      padding: 0 14px;
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--parchment);
+      font-family: 'Cinzel', serif;
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.1s ease;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .btn:hover {
+      background: rgba(212, 168, 67, 0.1);
+      border-color: rgba(212, 168, 67, 0.6);
+      color: #f0d990;
+      box-shadow: 0 0 12px rgba(212, 168, 67, 0.15), inset 0 1px 0 rgba(255,255,255,0.06);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0px) scale(0.985);
+      background: rgba(212, 168, 67, 0.15);
+      box-shadow: 0 0 6px rgba(212, 168, 67, 0.1);
+      transition-duration: 0.06s;
+    }
+
+    /* ── Button Variants ────────────────────────────────── */
+    .btn--primary {
+      border-color: rgba(184, 74, 26, 0.5);
+      background: rgba(184, 74, 26, 0.08);
+      color: #e8a080;
+    }
+
+    .btn--primary:hover {
+      background: rgba(184, 74, 26, 0.18);
+      border-color: rgba(184, 74, 26, 0.75);
+      color: #f5c0a0;
+      box-shadow: 0 0 14px rgba(184, 74, 26, 0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .btn--moss {
+      border-color: rgba(61, 92, 42, 0.55);
+      background: rgba(61, 92, 42, 0.08);
+      color: #90b870;
+    }
+
+    .btn--moss:hover {
+      background: rgba(61, 92, 42, 0.2);
+      border-color: rgba(100, 150, 60, 0.7);
+      color: #b0d890;
+      box-shadow: 0 0 14px rgba(61, 92, 42, 0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    /* ── Icon Glyphs (SVG inline) ───────────────────────── */
+    .btn-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      opacity: 0.8;
+      transition: opacity 0.18s ease;
+    }
+
+    .btn:hover .btn-icon { opacity: 1; }
+
+    /* ── Divider ────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      margin: 2px 0;
+      background: linear-gradient(90deg, transparent, var(--panel-border), transparent);
+    }
+
+    /* ── Status Indicator ───────────────────────────────── */
+    .status-bar {
+      padding: 8px 14px 10px;
+      border-top: 1px solid rgba(180,130,50,0.18);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--moss);
+      box-shadow: 0 0 6px var(--moss);
+      animation: pulse-dot 2.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 5px #3d5c2a; }
+      50%       { opacity: 0.5; box-shadow: 0 0 2px #3d5c2a; }
+    }
+
+    .status-text {
+      font-family: 'Crimson Pro', serif;
+      font-style: italic;
+      font-size: 10.5px;
+      color: rgba(200, 169, 110, 0.45);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Play / Pause Icon Toggle ───────────────────────── */
+    .icon-pause { display: none; }
+
+    #btn-play.is-playing .icon-play  { display: none; }
+    #btn-play.is-playing .icon-pause { display: block; }
+
+    /* ── Corner Ornaments ───────────────────────────────── */
+    .corner {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: rgba(212, 168, 67, 0.35);
+      border-style: solid;
+    }
+    .corner--tl { top: 4px; left: 4px;  border-width: 1px 0 0 1px; }
+    .corner--tr { top: 4px; right: 4px; border-width: 1px 1px 0 0; }
+    .corner--bl { bottom: 4px; left: 4px;  border-width: 0 0 1px 1px; }
+    .corner--br { bottom: 4px; right: 4px; border-width: 0 1px 1px 0; }
+  </style>
+</head>
+<body>
+
+  <!-- ── WebGL Canvas ──────────────────────────────────── -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- ── UI Overlay Panel ─────────────────────────────── -->
+  <div id="ui-panel" role="complementary" aria-label="Kontrol Simulasi">
+
+    <!-- Corner ornaments -->
+    <span class="corner corner--tl"></span>
+    <span class="corner corner--tr"></span>
+    <span class="corner corner--bl"></span>
+    <span class="corner corner--br"></span>
+
+    <!-- Header -->
+    <div class="panel-header">
+      <div class="panel-title">Simulatio Urbis</div>
+      <div class="panel-subtitle">Medieval · Isometric 2.5D</div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="btn-group">
+
+      <button class="btn btn--primary" id="btn-play" type="button" aria-label="Mulai atau Jeda Animasi">
+        <!-- Play icon (shown when paused) -->
+        <svg class="btn-icon icon-play" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <polygon points="3,2 13,8 3,14" fill="currentColor"/>
+        </svg>
+        <!-- Pause icon (shown when playing) -->
+        <svg class="btn-icon icon-pause" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="2.5" y="2" width="4" height="12" rx="1" fill="currentColor"/>
+          <rect x="9.5" y="2" width="4" height="12" rx="1" fill="currentColor"/>
+        </svg>
+        <span class="btn-play-label">Start</span>
+      </button>
+
+      <div class="divider"></div>
+
+      <button class="btn" id="btn-random-pos" type="button" aria-label="Acak Posisi Objek">
+        <!-- Shuffle/dice icon -->
+        <svg class="btn-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="1.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/>
+          <rect x="9.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/>
+          <rect x="1.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/>
+          <rect x="9.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/>
+          <circle cx="4" cy="4" r="0.9" fill="currentColor"/>
+          <circle cx="12" cy="4" r="0.9" fill="currentColor"/>
+          <circle cx="4" cy="12" r="0.9" fill="currentColor"/>
+          <circle cx="12" cy="12" r="0.9" fill="currentColor"/>
+        </svg>
+        Acak Posisi
+      </button>
+
+      <button class="btn btn--moss" id="btn-random-map" type="button" aria-label="Acak Peta Baru">
+        <!-- Map refresh icon -->
+        <svg class="btn-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M2 8a6 6 0 0 1 10.5-3.95" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M14 8a6 6 0 0 1-10.5 3.95" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          <polyline points="11,1.5 12.5,4 10,4.5" fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linejoin="round"/>
+          <polyline points="5,14.5 3.5,12 6,11.5"  fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linejoin="round"/>
+        </svg>
+        Acak Peta
+      </button>
+
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-dot" id="status-dot"></span>
+      <span class="status-text" id="status-text">WebGL siaga…</span>
+    </div>
+
+  </div>
+
+  <!-- ── Entry Point ───────────────────────────────────── -->
+  <script type="module" src="main.js"></script>
+
+  <!-- Play/Pause toggle — UI state only, bisa di-override dari main.js -->
+  <script>
+    const btnPlay  = document.getElementById('btn-play');
+    const label    = btnPlay.querySelector('.btn-play-label');
+    const statusTx = document.getElementById('status-text');
+    const statusDt = document.getElementById('status-dot');
+
+    btnPlay.addEventListener('click', () => {
+      const playing = btnPlay.classList.toggle('is-playing');
+      label.textContent        = playing ? 'Pause' : 'Start';
+      statusTx.textContent     = playing ? 'Animasi berjalan…' : 'Animasi dijeda.';
+      statusDt.style.background  = playing ? '#b84a1a' : '#3d5c2a';
+      statusDt.style.boxShadow   = playing ? '0 0 6px #b84a1a' : '0 0 6px #3d5c2a';
+    });
+  </script>
+
+</body>
+</html>
+```
