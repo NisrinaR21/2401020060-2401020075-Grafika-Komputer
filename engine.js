@@ -5,27 +5,27 @@
  * Mata Kuliah Grafika Komputer
  *
  * Deskripsi:
- *   File ini menyediakan fondasi rendering WebGL untuk simulasi tata kota
- *   medieval dari sudut pandang isometric 2.5D. Engine ini meng-handle:
- *   inisialisasi WebGL, kompilasi shader, operasi matriks 4×4 manual,
- *   kamera orthographic-isometric, kontrol kamera berbasis mouse, dan
- *   optimasi dirty flag agar ringan di hardware GPU terintegrasi.
+ * File ini menyediakan fondasi rendering WebGL untuk simulasi tata kota
+ * medieval dari sudut pandang isometric 2.5D. Engine ini meng-handle:
+ * inisialisasi WebGL, kompilasi shader, operasi matriks 4×4 manual,
+ * kamera orthographic-isometric, kontrol kamera berbasis mouse, dan
+ * optimasi dirty flag agar ringan di hardware GPU terintegrasi.
  *
  * Teknologi:
- *   - WebGL 1.0 (canvas.getContext("webgl"))
- *   - Vanilla JavaScript ES6 Module (tidak ada library eksternal)
- *   - Float32Array untuk matriks (column-major, sesuai standar WebGL)
+ * - WebGL 1.0 (canvas.getContext("webgl"))
+ * - Vanilla JavaScript ES6 Module (tidak ada library eksternal)
+ * - Float32Array untuk matriks (column-major, sesuai standar WebGL)
  *
  * Cara Penggunaan (dari main.js):
- *   import { initWebGL, beginFrame, setColor } from './engine.js';
- *   const engine = initWebGL('myCanvas');
- *   function render() {
- *     beginFrame(engine.gl, engine.cameraState, engine.locations,
- *                engine.canvas.width, engine.canvas.height);
- *     // ... draw calls di sini
- *     requestAnimationFrame(render);
- *   }
- *   render();
+ * import { initWebGL, beginFrame, setColor } from './engine.js';
+ * const engine = initWebGL('myCanvas');
+ * function render() {
+ * beginFrame(engine.gl, engine.cameraState, engine.locations,
+ * engine.canvas.width, engine.canvas.height);
+ * // ... draw calls di sini
+ * requestAnimationFrame(render);
+ * }
+ * render();
  * =============================================================================
  */
 
@@ -113,7 +113,7 @@ const ISO_ANGLE_X = 35.264 * (Math.PI / 180); // ≈ 0.6155 radian
  * Membuat matriks identitas 4×4.
  *
  * Matriks identitas I adalah elemen netral perkalian matriks:
- *   A × I = I × A = A
+ * A × I = I × A = A
  * Digunakan sebagai titik awal sebelum menerapkan transformasi apapun.
  *
  * @returns {Float32Array} Array 16 elemen — matriks identitas 4×4
@@ -147,21 +147,21 @@ export function createIdentityMatrix() {
  *
  * Rumus matriks orthographic (dalam representasi baris × kolom):
  *
- *   ┌  2/(r-l)    0           0          -(r+l)/(r-l) ┐
- *   │  0          2/(t-b)     0          -(t+b)/(t-b) │
- *   │  0          0          -2/(f-n)    -(f+n)/(f-n) │
- *   └  0          0           0           1            ┘
+ * ┌  2/(r-l)    0           0          -(r+l)/(r-l) ┐
+ * │  0          2/(t-b)     0          -(t+b)/(t-b) │
+ * │  0          0          -2/(f-n)    -(f+n)/(f-n) │
+ * └  0          0           0           1            ┘
  *
  * PENGARUH ZOOM TERHADAP ORTHOGRAPHIC:
  * ─────────────────────────────────────────────────────────────────────────────
  * Zoom diimplementasikan dengan MENGUBAH LEBAR WINDOW orthographic:
- *   - Zoom IN  → window lebih sempit → area tampil lebih kecil → objek tampak BESAR
- *   - Zoom OUT → window lebih lebar → area tampil lebih besar  → objek tampak KECIL
+ * - Zoom IN  → window lebih sempit → area tampil lebih kecil → objek tampak BESAR
+ * - Zoom OUT → window lebih lebar → area tampil lebih besar  → objek tampak KECIL
  *
  * Misalnya dengan BASE_VIEW_SIZE = 10:
- *   zoom=1.0 → halfH=10.0 → tampil area ±10 unit vertikal
- *   zoom=2.0 → halfH=5.0  → tampil area ±5 unit (lebih dekat, 2× lebih besar)
- *   zoom=0.5 → halfH=20.0 → tampil area ±20 unit (lebih jauh, 2× lebih kecil)
+ * zoom=1.0 → halfH=10.0 → tampil area ±10 unit vertikal
+ * zoom=2.0 → halfH=5.0  → tampil area ±5 unit (lebih dekat, 2× lebih besar)
+ * zoom=0.5 → halfH=20.0 → tampil area ±20 unit (lebih jauh, 2× lebih kecil)
  *
  * @param {number} left   Batas kiri frustum (world units)
  * @param {number} right  Batas kanan frustum (world units)
@@ -213,10 +213,10 @@ export function createOrthographicMatrix(left, right, bottom, top, near, far) {
  * mengikuti sumbu 3D dunia yang TIDAK sejajar layar setelah isometric rotation.
  *
  * Matriks translasi (baris × kolom):
- *   ┌ 1  0  0  tx ┐
- *   │ 0  1  0  ty │
- *   │ 0  0  1  tz │
- *   └ 0  0  0  1  ┘
+ * ┌ 1  0  0  tx ┐
+ * │ 0  1  0  ty │
+ * │ 0  0  1  tz │
+ * └ 0  0  0  1  ┘
  *
  * @param {number} tx Translasi sumbu X (positif = geser kanan)
  * @param {number} ty Translasi sumbu Y (positif = geser atas)
@@ -240,10 +240,10 @@ export function createTranslationMatrix(tx, ty, tz) {
  * tilt yang sempurna sehingga semua sumbu terlihat sama panjang di layar.
  *
  * Matriks rotasi X (baris × kolom):
- *   ┌ 1    0       0      0 ┐
- *   │ 0    cos(a)  -sin(a) 0 │
- *   │ 0    sin(a)  cos(a)  0 │
- *   └ 0    0       0      1 ┘
+ * ┌ 1    0       0      0 ┐
+ * │ 0    cos(a)  -sin(a) 0 │
+ * │ 0    sin(a)  cos(a)  0 │
+ * └ 0    0       0      1 ┘
  *
  * @param {number} angleRad Sudut rotasi dalam RADIAN
  * @returns {Float32Array} Matriks rotasi X 4×4 (column-major)
@@ -273,10 +273,10 @@ export function createRotationXMatrix(angleRad) {
  * membentuk tampilan berlian khas isometric medieval.
  *
  * Matriks rotasi Y (baris × kolom):
- *   ┌  cos(a)  0  sin(a)  0 ┐
- *   │  0       1  0       0 │
- *   │ -sin(a)  0  cos(a)  0 │
- *   └  0       0  0       1 ┘
+ * ┌  cos(a)  0  sin(a)  0 ┐
+ * │  0       1  0       0 │
+ * │ -sin(a)  0  cos(a)  0 │
+ * └  0       0  0       1 ┘
  *
  * @param {number} angleRad Sudut rotasi dalam RADIAN
  * @returns {Float32Array} Matriks rotasi Y 4×4 (column-major)
@@ -322,16 +322,16 @@ export function createScaleMatrix(sx, sy, sz) {
  * Perkalian matriks TIDAK komutatif: (A × B) ≠ (B × A)
  *
  * Dalam pipeline grafika komputer, urutan transformasi standar adalah:
- *   gl_Position = Projection × View × Model × vertex
+ * gl_Position = Projection × View × Model × vertex
  *
  * Dibaca dari KANAN KE KIRI (urutan penerapan ke vertex):
- *   1. Model (M): posisikan dan orientasikan objek di dunia
- *   2. View  (V): transformasikan ke ruang kamera
- *   3. Projection (P): proyeksikan ke layar 2D
+ * 1. Model (M): posisikan dan orientasikan objek di dunia
+ * 2. View  (V): transformasikan ke ruang kamera
+ * 3. Projection (P): proyeksikan ke layar 2D
  *
  * Pada engine ini, untuk kamera isometric:
- *   VP = Projection × T_pan × RotX × RotY
- *   Dibaca kanan ke kiri: Ry → Rx → T_pan → P
+ * VP = Projection × T_pan × RotX × RotY
+ * Dibaca kanan ke kiri: Ry → Rx → T_pan → P
  *
  * IMPLEMENTASI COLUMN-MAJOR:
  * ─────────────────────────────────────────────────────────────────────────────
@@ -377,9 +377,9 @@ export function multiplyMatrix4(a, b) {
  *
  * Variabel:
  * - `aPosition` (attribute): posisi vertex 3D dalam ruang model
- *   Dikirim dari VBO (Vertex Buffer Object) di JavaScript.
+ * Dikirim dari VBO (Vertex Buffer Object) di JavaScript.
  * - `uViewProjectionMatrix` (uniform): matriks gabungan VP dari kamera
- *   Nilai yang sama untuk semua vertex dalam satu draw call.
+ * Nilai yang sama untuk semua vertex dalam satu draw call.
  * - `gl_Position` (built-in output): posisi akhir dalam clip space [-1,1]³
  *
  * Transformasi: gl_Position = VP × vec4(aPosition, 1.0)
@@ -476,12 +476,12 @@ function compileShader(gl, source, type) {
  * dan fragment shader menjadi satu unit yang bisa diaktifkan dengan gl.useProgram().
  *
  * Proses lengkap:
- *   1. Kompilasi vertex shader
- *   2. Kompilasi fragment shader
- *   3. Attach kedua shader ke program
- *   4. Link program (menggabungkan output VS dengan input FS, alokasi register)
- *   5. Validasi link status
- *   6. Hapus shader intermediate (sudah ter-embed di program)
+ * 1. Kompilasi vertex shader
+ * 2. Kompilasi fragment shader
+ * 3. Attach kedua shader ke program
+ * 4. Link program (menggabungkan output VS dengan input FS, alokasi register)
+ * 5. Validasi link status
+ * 6. Hapus shader intermediate (sudah ter-embed di program)
  *
  * @param {WebGLRenderingContext} gl  Konteks WebGL
  * @param {string} vsSource          Source code vertex shader (GLSL)
@@ -571,10 +571,10 @@ function createCameraState() {
          * isDirty = false → matriks kamera masih valid, SKIP kalkulasi
          *
          * Kapan isDirty di-set true:
-         *   - Zoom berubah (event scroll)
-         *   - Pan berubah (event mouse drag)
-         *   - Ukuran canvas berubah (ResizeObserver)
-         *   - Inisialisasi pertama
+         * - Zoom berubah (event scroll)
+         * - Pan berubah (event mouse drag)
+         * - Ukuran canvas berubah (ResizeObserver)
+         * - Inisialisasi pertama
          *
          * Tanpa optimasi ini, engine akan melakukan 6 perkalian matriks
          * di setiap frame (~60 kali/detik), bahkan saat kamera diam.
@@ -600,28 +600,28 @@ function createCameraState() {
  * URUTAN TRANSFORMASI DAN LOGIKA MATRIKS:
  * ─────────────────────────────────────────────────────────────────────────────
  *
- *   VP = P × T_pan × Rx × Ry
+ * VP = P × T_pan × Rx × Ry
  *
  * Dibaca dari KANAN KE KIRI (urutan penerapan ke setiap vertex):
  *
- *   Step 1 — Ry (Rotasi Y 45°):
- *     Putar seluruh dunia 45° di sumbu Y.
- *     Hasil: sumbu X dan Z tampak diagonal simetris dari layar.
- *     Ini menciptakan tampilan "berlian" khas isometric.
+ * Step 1 — Ry (Rotasi Y 45°):
+ * Putar seluruh dunia 45° di sumbu Y.
+ * Hasil: sumbu X dan Z tampak diagonal simetris dari layar.
+ * Ini menciptakan tampilan "berlian" khas isometric.
  *
- *   Step 2 — Rx (Rotasi X 35.264°):
- *     Miringkan tampilan ke bawah sebesar 35.264°.
- *     Sudut ini = arctan(1/√2), yang membuat ketiga sumbu (X,Y,Z)
- *     terproyeksi dengan PANJANG SAMA di layar (true isometric).
+ * Step 2 — Rx (Rotasi X 35.264°):
+ * Miringkan tampilan ke bawah sebesar 35.264°.
+ * Sudut ini = arctan(1/√2), yang membuat ketiga sumbu (X,Y,Z)
+ * terproyeksi dengan PANJANG SAMA di layar (true isometric).
  *
- *   Step 3 — T_pan (Translasi):
- *     Geser tampilan untuk panning. Diterapkan SETELAH rotasi isometric
- *     sehingga arah pan SEJAJAR dengan layar (screen-aligned), bukan
- *     mengikuti sumbu 3D dunia yang sudah dirotasi.
+ * Step 3 — T_pan (Translasi):
+ * Geser tampilan untuk panning. Diterapkan SETELAH rotasi isometric
+ * sehingga arah pan SEJAJAR dengan layar (screen-aligned), bukan
+ * mengikuti sumbu 3D dunia yang sudah dirotasi.
  *
- *   Step 4 — P (Orthographic Projection):
- *     Peta frustum 3D ke layar 2D tanpa efek perspektif.
- *     Window orthographic disesuaikan dengan zoom dan aspek rasio.
+ * Step 4 — P (Orthographic Projection):
+ * Peta frustum 3D ke layar 2D tanpa efek perspektif.
+ * Window orthographic disesuaikan dengan zoom dan aspek rasio.
  *
  * @param {WebGLRenderingContext} gl  Konteks WebGL
  * @param {Object} cameraState        State kamera yang akan diperbarui
@@ -689,8 +689,8 @@ export function updateCameraMatrix(gl, cameraState, canvasWidth, canvasHeight) {
  *
  * Kontrol yang tersedia:
  * ─────────────────────────────────────────────────────────────────────────────
- *   SCROLL WHEEL → Zoom in / zoom out
- *   MOUSE DRAG   → Panning peta (geser tampilan)
+ * SCROLL WHEEL → Zoom in / zoom out
+ * MOUSE DRAG   → Panning peta (geser tampilan)
  *
  * PRINSIP DIRTY FLAG PADA EVENT HANDLER:
  * ─────────────────────────────────────────────────────────────────────────────
@@ -839,17 +839,17 @@ export function setupCameraControls(canvas, cameraState) {
  * mendapatkan semua yang diperlukan untuk rendering.
  *
  * Urutan proses inisialisasi:
- *   1. Ambil elemen canvas dari DOM berdasarkan ID
- *   2. Ambil konteks WebGL 1.0
- *   3. Sinkronisasi ukuran canvas (CSS size vs framebuffer size)
- *   4. Set viewport, clear color, dan state rendering
- *   5. Kompilasi shader program
- *   6. Ambil lokasi attribute dan uniform
- *   7. Buat state kamera default
- *   8. Hitung matriks kamera awal
- *   9. Upload matriks ke GPU
- *   10. Pasang kontrol kamera mouse
- *   11. Daftarkan ResizeObserver untuk handling resize window
+ * 1. Ambil elemen canvas dari DOM berdasarkan ID
+ * 2. Ambil konteks WebGL 1.0
+ * 3. Sinkronisasi ukuran canvas (CSS size vs framebuffer size)
+ * 4. Set viewport, clear color, dan state rendering
+ * 5. Kompilasi shader program
+ * 6. Ambil lokasi attribute dan uniform
+ * 7. Buat state kamera default
+ * 8. Hitung matriks kamera awal
+ * 9. Upload matriks ke GPU
+ * 10. Pasang kontrol kamera mouse
+ * 11. Daftarkan ResizeObserver untuk handling resize window
  *
  * @param {string} canvasId  ID elemen HTML canvas (contoh: 'gameCanvas')
  * @returns {Object|null}    Objek engine siap pakai, atau null jika inisialisasi gagal
@@ -1064,16 +1064,16 @@ export function initWebGL(canvasId) {
  *
  * POLA PENGGUNAAN YANG BENAR (di main.js):
  * ─────────────────────────────────────────────────────────────────────────────
- *   function renderLoop() {
- *     beginFrame(engine.gl, engine.cameraState, engine.locations,
- *                engine.canvas.width, engine.canvas.height);
+ * function renderLoop() {
+ * beginFrame(engine.gl, engine.cameraState, engine.locations,
+ * engine.canvas.width, engine.canvas.height);
  *
- *     // --- Draw calls di sini ---
- *     // gl.bindBuffer(...), gl.drawArrays(...), dll
+ * // --- Draw calls di sini ---
+ * // gl.bindBuffer(...), gl.drawArrays(...), dll
  *
- *     requestAnimationFrame(renderLoop);
- *   }
- *   renderLoop();
+ * requestAnimationFrame(renderLoop);
+ * }
+ * renderLoop();
  *
  * DETAIL OPTIMASI DIRTY FLAG:
  * ─────────────────────────────────────────────────────────────────────────────
@@ -1081,11 +1081,11 @@ export function initWebGL(canvasId) {
  * floating-point). Total: ~192 operasi FP per update matriks.
  *
  * Pada 60 FPS dengan kamera diam:
- *   - Tanpa dirty flag : 192 × 60 = 11.520 op/detik (tidak perlu)
- *   - Dengan dirty flag: 192 × 0  = 0 op/detik saat kamera diam ✓
+ * - Tanpa dirty flag : 192 × 60 = 11.520 op/detik (tidak perlu)
+ * - Dengan dirty flag: 192 × 0  = 0 op/detik saat kamera diam ✓
  *
  * Saat kamera bergerak (misalnya drag selama 1 detik pada 60 FPS):
- *   - Dengan dirty flag: 192 × 60 = 11.520 op (hanya saat perlu) ✓
+ * - Dengan dirty flag: 192 × 60 = 11.520 op (hanya saat perlu) ✓
  *
  * @param {WebGLRenderingContext} gl  Konteks WebGL
  * @param {Object} cameraState        State kamera isometric
@@ -1130,8 +1130,8 @@ export function beginFrame(gl, cameraState, locations, canvasWidth, canvasHeight
  * Panggil sebelum draw call jika ingin mengubah warna objek.
  *
  * Contoh penggunaan:
- *   setColor(gl, locations, 0.8, 0.2, 0.1, 1.0); // merah brick medieval
- *   gl.drawArrays(gl.TRIANGLES, 0, 3);            // gambar segitiga merah
+ * setColor(gl, locations, 0.8, 0.2, 0.1, 1.0); // merah brick medieval
+ * gl.drawArrays(gl.TRIANGLES, 0, 3);            // gambar segitiga merah
  *
  * @param {WebGLRenderingContext} gl Konteks WebGL
  * @param {Object} locations         Objek lokasi uniform
