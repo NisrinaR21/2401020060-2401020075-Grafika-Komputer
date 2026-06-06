@@ -1,0 +1,7934 @@
+{
+  "metadata": {
+    "title": "Medieval Spatial Mapping — Map Variant 2",
+    "variantId": "2",
+    "theme": "Kota medieval di dalam kawasan hutan dengan kolam kecil sebagai aksen",
+    "description": "Variant 2: rumah diperbanyak lagi secara lebih merata pada tiap distrik, jalan tetap versi V10, dan occlusion kereta dipertegas lewat patch renderer dan objek tinggi yang lebih dekat ke tepi jalur.",
+    "camera": {
+      "projection": "2.5D_isometric",
+      "viewportHint": {
+        "x": 0,
+        "y": 0,
+        "zoom": 0.74
+      }
+    },
+    "contributor": {
+      "name": "Dhiya Zarifa Putri Marzuki",
+      "nim": "2401020075",
+      "contribution": "Perancangan variasi peta 2, node, edge, distrik, objek statis, dan data atlas."
+    }
+  },
+  "atlasSize": 2048,
+  "worldBounds": {
+    "minX": -1700,
+    "maxX": 1700,
+    "minY": -950,
+    "maxY": 950,
+    "padding": 220
+  },
+  "roadStyle": {
+    "defaultWidth": 24,
+    "mainWidth": 30,
+    "secondaryWidth": 24,
+    "branchWidth": 20,
+    "roadColor": "#b98545",
+    "edgeColor": "#72512f",
+    "highlightColor": "#d8b36d",
+    "curveStrength": 86,
+    "junctionRadiusMultiplier": 0.0
+  },
+  "roadGraph": {
+    "nodes": [
+      {
+        "id": "node_01",
+        "x": -1400,
+        "y": -180,
+        "label": "Gerbang Barat",
+        "district": "west_gate",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_02",
+        "x": -1120,
+        "y": -480,
+        "label": "Rumah Barat Atas",
+        "district": "west_north",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_03",
+        "x": -580,
+        "y": -520,
+        "label": "Kolam Utara",
+        "district": "north_pond",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_04",
+        "x": 60,
+        "y": -420,
+        "label": "Jalur Utara",
+        "district": "north_center",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_05",
+        "x": 660,
+        "y": -360,
+        "label": "Benteng Utara",
+        "district": "castle_north",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_06",
+        "x": 1220,
+        "y": -120,
+        "label": "Gerbang Timur Atas",
+        "district": "east_gate",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_07",
+        "x": 1260,
+        "y": 300,
+        "label": "Gerbang Timur Selatan",
+        "district": "east_south",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_08",
+        "x": 720,
+        "y": 500,
+        "label": "Distrik Timur",
+        "district": "east_village",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_09",
+        "x": 120,
+        "y": 520,
+        "label": "Alun Selatan",
+        "district": "south_center",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_10",
+        "x": -560,
+        "y": 440,
+        "label": "Pandai Besi Barat",
+        "district": "west_south",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_11",
+        "x": -1120,
+        "y": 230,
+        "label": "Jalur Barat Selatan",
+        "district": "west_south",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_12",
+        "x": -760,
+        "y": -80,
+        "label": "Pasar Barat",
+        "district": "west_market",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_13",
+        "x": -260,
+        "y": -120,
+        "label": "Plaza Barat",
+        "district": "plaza_west",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_14",
+        "x": 280,
+        "y": -80,
+        "label": "Plaza Timur",
+        "district": "plaza_east",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_15",
+        "x": 780,
+        "y": 20,
+        "label": "Jalan Benteng",
+        "district": "castle_road",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_16",
+        "x": 460,
+        "y": 250,
+        "label": "Rumah Timur Selatan",
+        "district": "east_houses",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_17",
+        "x": -180,
+        "y": 220,
+        "label": "Alun Tengah",
+        "district": "center",
+        "canBeStart": true,
+        "canBeTarget": true
+      },
+      {
+        "id": "node_18",
+        "x": -900,
+        "y": 560,
+        "label": "Kolam Selatan Barat",
+        "district": "south_pond",
+        "canBeStart": true,
+        "canBeTarget": true
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge_01",
+        "from": "node_01",
+        "to": "node_02",
+        "weight": 0.98,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 410.37,
+        "curve": {
+          "p1": {
+            "x": -1249.1,
+            "y": -224.4
+          },
+          "p2": {
+            "x": -1156.7,
+            "y": -323.4
+          }
+        }
+      },
+      {
+        "id": "edge_02",
+        "from": "node_02",
+        "to": "node_03",
+        "weight": 1.29,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 541.48,
+        "curve": {
+          "p1": {
+            "x": -947.0,
+            "y": -563.0
+          },
+          "p2": {
+            "x": -768.8,
+            "y": -576.2
+          }
+        }
+      },
+      {
+        "id": "edge_03",
+        "from": "node_03",
+        "to": "node_04",
+        "weight": 1.54,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 647.77,
+        "curve": {
+          "p1": {
+            "x": -378.8,
+            "y": -422.8
+          },
+          "p2": {
+            "x": -167.6,
+            "y": -389.8
+          }
+        }
+      },
+      {
+        "id": "edge_04",
+        "from": "node_04",
+        "to": "node_05",
+        "weight": 1.44,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 602.99,
+        "curve": {
+          "p1": {
+            "x": 266.0,
+            "y": -479.8
+          },
+          "p2": {
+            "x": 464.0,
+            "y": -460.0
+          }
+        }
+      },
+      {
+        "id": "edge_05",
+        "from": "node_05",
+        "to": "node_06",
+        "weight": 1.45,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 609.26,
+        "curve": {
+          "p1": {
+            "x": 813.3,
+            "y": -207.3
+          },
+          "p2": {
+            "x": 998.1,
+            "y": -128.1
+          }
+        }
+      },
+      {
+        "id": "edge_06",
+        "from": "node_06",
+        "to": "node_07",
+        "weight": 1.0,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 421.9,
+        "curve": {
+          "p1": {
+            "x": 1312.8,
+            "y": 11.0
+          },
+          "p2": {
+            "x": 1326.0,
+            "y": 149.6
+          }
+        }
+      },
+      {
+        "id": "edge_07",
+        "from": "node_07",
+        "to": "node_08",
+        "weight": 1.37,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 575.85,
+        "curve": {
+          "p1": {
+            "x": 1059.2,
+            "y": 305.0
+          },
+          "p2": {
+            "x": 881.0,
+            "y": 371.0
+          }
+        }
+      },
+      {
+        "id": "edge_08",
+        "from": "node_08",
+        "to": "node_09",
+        "weight": 1.43,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 600.33,
+        "curve": {
+          "p1": {
+            "x": 524.7,
+            "y": 586.6
+          },
+          "p2": {
+            "x": 326.7,
+            "y": 593.2
+          }
+        }
+      },
+      {
+        "id": "edge_09",
+        "from": "node_09",
+        "to": "node_10",
+        "weight": 1.63,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 684.69,
+        "curve": {
+          "p1": {
+            "x": -95.6,
+            "y": 419.1
+          },
+          "p2": {
+            "x": -320.0,
+            "y": 392.7
+          }
+        }
+      },
+      {
+        "id": "edge_10",
+        "from": "node_10",
+        "to": "node_11",
+        "weight": 1.42,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 598.08,
+        "curve": {
+          "p1": {
+            "x": -765.9,
+            "y": 426.9
+          },
+          "p2": {
+            "x": -950.7,
+            "y": 357.6
+          }
+        }
+      },
+      {
+        "id": "edge_11",
+        "from": "node_11",
+        "to": "node_01",
+        "weight": 1.18,
+        "terrain": "dirt",
+        "category": "main",
+        "width": 30,
+        "oneWay": false,
+        "lengthHint": 496.49,
+        "curve": {
+          "p1": {
+            "x": -1142.2,
+            "y": 46.8
+          },
+          "p2": {
+            "x": -1234.6,
+            "y": -88.5
+          }
+        }
+      },
+      {
+        "id": "edge_12",
+        "from": "node_02",
+        "to": "node_12",
+        "weight": 1.28,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 538.14,
+        "curve": {
+          "p1": {
+            "x": -956.6,
+            "y": -388.1
+          },
+          "p2": {
+            "x": -837.8,
+            "y": -256.1
+          }
+        }
+      },
+      {
+        "id": "edge_13",
+        "from": "node_12",
+        "to": "node_13",
+        "weight": 1.19,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 501.6,
+        "curve": {
+          "p1": {
+            "x": -590.6,
+            "y": -38.4
+          },
+          "p2": {
+            "x": -425.6,
+            "y": -51.6
+          }
+        }
+      },
+      {
+        "id": "edge_14",
+        "from": "node_13",
+        "to": "node_14",
+        "weight": 1.29,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 541.48,
+        "curve": {
+          "p1": {
+            "x": -78.1,
+            "y": -156.7
+          },
+          "p2": {
+            "x": 100.1,
+            "y": -143.5
+          }
+        }
+      },
+      {
+        "id": "edge_15",
+        "from": "node_14",
+        "to": "node_15",
+        "weight": 1.21,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 509.9,
+        "curve": {
+          "p1": {
+            "x": 434.2,
+            "y": 6.9
+          },
+          "p2": {
+            "x": 599.2,
+            "y": 39.9
+          }
+        }
+      },
+      {
+        "id": "edge_16",
+        "from": "node_15",
+        "to": "node_05",
+        "weight": 0.95,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 398.5,
+        "curve": {
+          "p1": {
+            "x": 697.5,
+            "y": -91.8
+          },
+          "p2": {
+            "x": 657.9,
+            "y": -217.2
+          }
+        }
+      },
+      {
+        "id": "edge_17",
+        "from": "node_11",
+        "to": "node_12",
+        "weight": 1.13,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 475.08,
+        "curve": {
+          "p1": {
+            "x": -958.8,
+            "y": 177.0
+          },
+          "p2": {
+            "x": -840.0,
+            "y": 74.7
+          }
+        }
+      },
+      {
+        "id": "edge_18",
+        "from": "node_13",
+        "to": "node_17",
+        "weight": 0.83,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 349.28,
+        "curve": {
+          "p1": {
+            "x": -175.2,
+            "y": -21.5
+          },
+          "p2": {
+            "x": -148.8,
+            "y": 90.7
+          }
+        }
+      },
+      {
+        "id": "edge_19",
+        "from": "node_17",
+        "to": "node_09",
+        "weight": 1.01,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 424.26,
+        "curve": {
+          "p1": {
+            "x": -119.9,
+            "y": 357.9
+          },
+          "p2": {
+            "x": -20.9,
+            "y": 456.9
+          }
+        }
+      },
+      {
+        "id": "edge_20",
+        "from": "node_14",
+        "to": "node_16",
+        "weight": 0.89,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 375.9,
+        "curve": {
+          "p1": {
+            "x": 387.7,
+            "y": 2.6
+          },
+          "p2": {
+            "x": 447.1,
+            "y": 111.5
+          }
+        }
+      },
+      {
+        "id": "edge_21",
+        "from": "node_16",
+        "to": "node_08",
+        "weight": 0.86,
+        "terrain": "dirt",
+        "category": "secondary",
+        "width": 24,
+        "oneWay": false,
+        "lengthHint": 360.69,
+        "curve": {
+          "p1": {
+            "x": 504.2,
+            "y": 375.7
+          },
+          "p2": {
+            "x": 590.0,
+            "y": 458.2
+          }
+        }
+      },
+      {
+        "id": "edge_22",
+        "from": "node_10",
+        "to": "node_18",
+        "weight": 0.86,
+        "terrain": "dirt",
+        "category": "branch",
+        "width": 20,
+        "oneWay": false,
+        "lengthHint": 360.56,
+        "curve": {
+          "p1": {
+            "x": -653.9,
+            "y": 531.5
+          },
+          "p2": {
+            "x": -766.1,
+            "y": 571.1
+          }
+        }
+      },
+      {
+        "id": "edge_23",
+        "from": "node_18",
+        "to": "node_11",
+        "weight": 0.94,
+        "terrain": "dirt",
+        "category": "branch",
+        "width": 20,
+        "oneWay": false,
+        "lengthHint": 396.61,
+        "curve": {
+          "p1": {
+            "x": -922.7,
+            "y": 417.8
+          },
+          "p2": {
+            "x": -995.3,
+            "y": 308.9
+          }
+        }
+      },
+      {
+        "id": "edge_24",
+        "from": "node_03",
+        "to": "node_13",
+        "weight": 1.22,
+        "terrain": "dirt",
+        "category": "branch",
+        "width": 20,
+        "oneWay": false,
+        "lengthHint": 512.25,
+        "curve": {
+          "p1": {
+            "x": -509.5,
+            "y": -359.9
+          },
+          "p2": {
+            "x": -403.9,
+            "y": -227.9
+          }
+        }
+      },
+      {
+        "id": "edge_25",
+        "from": "node_04",
+        "to": "node_14",
+        "weight": 0.96,
+        "terrain": "dirt",
+        "category": "branch",
+        "width": 20,
+        "oneWay": false,
+        "lengthHint": 404.97,
+        "curve": {
+          "p1": {
+            "x": 170.4,
+            "y": -332.2
+          },
+          "p2": {
+            "x": 243.0,
+            "y": -220.0
+          }
+        }
+      },
+      {
+        "id": "edge_26",
+        "from": "node_15",
+        "to": "node_07",
+        "weight": 1.32,
+        "terrain": "dirt",
+        "category": "branch",
+        "width": 20,
+        "oneWay": false,
+        "lengthHint": 555.7,
+        "curve": {
+          "p1": {
+            "x": 908.2,
+            "y": 164.2
+          },
+          "p2": {
+            "x": 1066.6,
+            "y": 256.6
+          }
+        }
+      }
+    ]
+  },
+  "rute_jalan": [
+    {
+      "id": "node_01",
+      "x": -1400,
+      "y": -180
+    },
+    {
+      "id": "node_02",
+      "x": -1120,
+      "y": -480
+    },
+    {
+      "id": "node_03",
+      "x": -580,
+      "y": -520
+    },
+    {
+      "id": "node_04",
+      "x": 60,
+      "y": -420
+    },
+    {
+      "id": "node_05",
+      "x": 660,
+      "y": -360
+    },
+    {
+      "id": "node_06",
+      "x": 1220,
+      "y": -120
+    },
+    {
+      "id": "node_07",
+      "x": 1260,
+      "y": 300
+    },
+    {
+      "id": "node_08",
+      "x": 720,
+      "y": 500
+    }
+  ],
+  "objek_statis": [
+    {
+      "id": "landmark_001",
+      "type": "benteng_utama",
+      "x": 1030,
+      "y": -320,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.25,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "landmark_decor_002",
+      "type": "semak_kecil",
+      "x": 1205.0,
+      "y": -266.7,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "landmark_decor_003",
+      "type": "semak_bulat",
+      "x": 840.3,
+      "y": -328.0,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "landmark_decor_004",
+      "type": "batu_kecil",
+      "x": 1046.6,
+      "y": -456.3,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "pond_005",
+      "type": "kolam",
+      "x": -395,
+      "y": -600,
+      "nearestNodeId": "node_03",
+      "layer": 1,
+      "scale": 0.29,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "pond_decor_006",
+      "type": "semak_kecil",
+      "x": -233.3,
+      "y": -576.4,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "pond_decor_007",
+      "type": "rumput_tinggi",
+      "x": -559.7,
+      "y": -606.9,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "pond_decor_008",
+      "type": "rumput_tinggi",
+      "x": -475.9,
+      "y": -703.5,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "pond_decor_009",
+      "type": "semak_bulat",
+      "x": -317.7,
+      "y": -705.0,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "pond_010",
+      "type": "kolam",
+      "x": -340,
+      "y": 540,
+      "nearestNodeId": "node_10",
+      "layer": 1,
+      "scale": 0.29,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "pond_decor_011",
+      "type": "rumput_tinggi",
+      "x": -178.3,
+      "y": 563.6,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "pond_decor_012",
+      "type": "batu_kecil",
+      "x": -437.1,
+      "y": 636.0,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "pond_decor_013",
+      "type": "rumput_tinggi",
+      "x": -504.7,
+      "y": 533.1,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "settlement1_014",
+      "type": "toko_kecil",
+      "x": -940.1,
+      "y": -193.9,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement1_015",
+      "type": "rumah_kayu_1",
+      "x": -1097,
+      "y": -307,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement1_016",
+      "type": "rumah_orkay",
+      "x": -1013,
+      "y": -304,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement1_017",
+      "type": "rumah_kayu_4",
+      "x": -1148.5,
+      "y": -161.8,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement1_018",
+      "type": "rumah_kayu_2",
+      "x": -1030.7,
+      "y": -158.6,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement1_019",
+      "type": "rumah_kayu_3",
+      "x": -1115,
+      "y": -230,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement2_020",
+      "type": "rumah_kayu_3",
+      "x": -781.8,
+      "y": 228.3,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement2_021",
+      "type": "rumah_orkay",
+      "x": -853.2,
+      "y": 277.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement2_022",
+      "type": "rumah_kayu_1",
+      "x": -896.9,
+      "y": 208.5,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement2_023",
+      "type": "toko_kecil",
+      "x": -802,
+      "y": 158,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "house_decor_024",
+      "type": "semak_bulat",
+      "x": -791.9,
+      "y": 290.3,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "settle_prop_025",
+      "type": "lampu_obor",
+      "x": -913.5,
+      "y": 306.6,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.21,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "settlement3_026",
+      "type": "toko_kecil",
+      "x": -634.1,
+      "y": 68.8,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement3_027",
+      "type": "rumah_kayu_4",
+      "x": -404.6,
+      "y": 82.2,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement3_028",
+      "type": "rumah_kayu_1",
+      "x": -537.3,
+      "y": 117.6,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement3_029",
+      "type": "rumah_kayu_3",
+      "x": -363,
+      "y": 2,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement3_030",
+      "type": "rumah_orkay",
+      "x": -696,
+      "y": 30,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement3_031",
+      "type": "rumah_kayu_2",
+      "x": -552,
+      "y": 26,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement3_032",
+      "type": "toko_kecil",
+      "x": -478,
+      "y": 24,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement3_033",
+      "type": "rumah_kayu_4",
+      "x": -616,
+      "y": 140,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "house_decor_034",
+      "type": "rumput_tinggi",
+      "x": -429.3,
+      "y": -14.5,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "settlement4_035",
+      "type": "toko_kecil",
+      "x": -135.0,
+      "y": -224.4,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement4_036",
+      "type": "rumah_kayu_3",
+      "x": -98.1,
+      "y": -29.2,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement4_037",
+      "type": "rumah_kayu_2",
+      "x": -20.4,
+      "y": -60.6,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement4_038",
+      "type": "rumah_kayu_4",
+      "x": -242.0,
+      "y": -209.0,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement5_039",
+      "type": "rumah_kayu_3",
+      "x": 268.7,
+      "y": 13.8,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement5_040",
+      "type": "rumah_kayu_2",
+      "x": 138.5,
+      "y": -20.4,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement5_041",
+      "type": "rumah_orkay",
+      "x": 168.9,
+      "y": 52.0,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement5_042",
+      "type": "rumah_kayu_1",
+      "x": 368.4,
+      "y": -125.0,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement5_043",
+      "type": "rumah_kayu_4",
+      "x": 306.9,
+      "y": 80.5,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "house_decor_044",
+      "type": "semak_kecil",
+      "x": 205.7,
+      "y": -0.6,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "settlement6_045",
+      "type": "rumah_kayu_3",
+      "x": 361,
+      "y": 182,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement6_046",
+      "type": "rumah_kayu_4",
+      "x": 532,
+      "y": 165,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement6_047",
+      "type": "rumah_kayu_2",
+      "x": 605,
+      "y": 168,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement6_048",
+      "type": "rumah_kayu_1",
+      "x": 708,
+      "y": 198,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement6_049",
+      "type": "toko_kecil",
+      "x": 377,
+      "y": 272,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement6_050",
+      "type": "pandai_besi",
+      "x": 559,
+      "y": 260,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement6_051",
+      "type": "rumah_kayu_3",
+      "x": 645,
+      "y": 256,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement6_052",
+      "type": "rumah_kayu_4",
+      "x": 720,
+      "y": 275,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement6_053",
+      "type": "rumah_kayu_2",
+      "x": 688.2,
+      "y": 341.6,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "house_decor_054",
+      "type": "semak_bulat",
+      "x": 406.5,
+      "y": 222.6,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "house_decor_055",
+      "type": "batu_kecil",
+      "x": 732.3,
+      "y": 376.7,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "settlement7_056",
+      "type": "rumah_kayu_2",
+      "x": 968.3,
+      "y": 45.7,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement7_057",
+      "type": "rumah_kayu_1",
+      "x": 894,
+      "y": 23,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement7_058",
+      "type": "rumah_kayu_4",
+      "x": 1040,
+      "y": 30,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement7_059",
+      "type": "rumah_kayu_3",
+      "x": 1128,
+      "y": 68,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.32,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement7_060",
+      "type": "toko_kecil",
+      "x": 1045.3,
+      "y": 114.1,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement7_061",
+      "type": "rumah_orkay",
+      "x": 1120.4,
+      "y": 142.2,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement7_062",
+      "type": "rumah_kayu_2",
+      "x": 861.2,
+      "y": 213.4,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement7_063",
+      "type": "rumah_kayu_4",
+      "x": 920,
+      "y": 257,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "house_decor_064",
+      "type": "semak_bulat",
+      "x": 1176.6,
+      "y": 121.3,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "settlement8_065",
+      "type": "rumah_kayu_4",
+      "x": 870.7,
+      "y": -87.6,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement8_066",
+      "type": "rumah_orkay",
+      "x": 771.2,
+      "y": -158.4,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "settlement8_067",
+      "type": "rumah_kayu_2",
+      "x": 951.2,
+      "y": -82.6,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.31,
+      "sortOffsetY": 26
+    },
+    {
+      "id": "forest_068",
+      "type": "pohon_besar",
+      "x": -1439.9,
+      "y": -623.8,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_069",
+      "type": "pohon_pinus",
+      "x": -1438.0,
+      "y": -822.6,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_070",
+      "type": "pohon_pinus",
+      "x": -1468.9,
+      "y": -716.6,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_071",
+      "type": "pohon_pinus",
+      "x": -1242.5,
+      "y": -723.0,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_072",
+      "type": "pohon_pinus",
+      "x": -1569.8,
+      "y": -778.3,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_073",
+      "type": "pohon_pinus",
+      "x": -1544.8,
+      "y": -624.8,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_074",
+      "type": "pohon_besar",
+      "x": -1251.3,
+      "y": -838.3,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_075",
+      "type": "pohon_pinus",
+      "x": -1329.3,
+      "y": -836.1,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_076",
+      "type": "pohon_pinus",
+      "x": -1576.3,
+      "y": -701.3,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_077",
+      "type": "pohon_pinus",
+      "x": -1351.8,
+      "y": -761.4,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_078",
+      "type": "pohon_besar",
+      "x": -1247.3,
+      "y": -618.6,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_079",
+      "type": "pohon_pinus",
+      "x": -1352.1,
+      "y": -627.1,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_080",
+      "type": "pohon_besar",
+      "x": -1308.9,
+      "y": -687.7,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_081",
+      "type": "pohon_pinus",
+      "x": -1395.4,
+      "y": -689.7,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_082",
+      "type": "pohon_pinus",
+      "x": -1513.1,
+      "y": -838.8,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_083",
+      "type": "rumput_tinggi",
+      "x": -1297.0,
+      "y": -779.8,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_084",
+      "type": "batu_kecil",
+      "x": -1513.7,
+      "y": -775.5,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_085",
+      "type": "batu_kecil",
+      "x": -1428.2,
+      "y": -767.0,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_086",
+      "type": "semak_bulat",
+      "x": -1520.4,
+      "y": -694.2,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_087",
+      "type": "batu_kecil",
+      "x": -1485.7,
+      "y": -661.3,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_088",
+      "type": "batu_kecil",
+      "x": -1521.1,
+      "y": -737.3,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_089",
+      "type": "pohon_pinus",
+      "x": -1094.4,
+      "y": -779.8,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_090",
+      "type": "pohon_besar",
+      "x": -1011.1,
+      "y": -659.7,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_091",
+      "type": "pohon_besar",
+      "x": -1181.4,
+      "y": -663.3,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_092",
+      "type": "pohon_pinus",
+      "x": -1012.1,
+      "y": -765.8,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_093",
+      "type": "pohon_pinus",
+      "x": -911.3,
+      "y": -708.5,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_094",
+      "type": "pohon_pinus",
+      "x": -1172.4,
+      "y": -747.0,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_095",
+      "type": "pohon_besar",
+      "x": -1096.9,
+      "y": -639.9,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_096",
+      "type": "pohon_pinus",
+      "x": -910.5,
+      "y": -812.9,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_097",
+      "type": "pohon_pinus",
+      "x": -914.7,
+      "y": -630.0,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_098",
+      "type": "pohon_pinus",
+      "x": -1163.6,
+      "y": -839.9,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_099",
+      "type": "pohon_besar",
+      "x": -995.6,
+      "y": -843.6,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_100",
+      "type": "rumput_tinggi",
+      "x": -1111.2,
+      "y": -711.1,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_101",
+      "type": "semak_kecil",
+      "x": -935.3,
+      "y": -759.3,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_102",
+      "type": "batu_kecil",
+      "x": -1044.2,
+      "y": -714.3,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_103",
+      "type": "semak_bulat",
+      "x": -1064.8,
+      "y": -844.9,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_104",
+      "type": "rumput_tinggi",
+      "x": -1073.6,
+      "y": -692.6,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_105",
+      "type": "semak_bulat",
+      "x": -989.3,
+      "y": -714.5,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_106",
+      "type": "rumput_tinggi",
+      "x": -1220.6,
+      "y": -786.6,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_107",
+      "type": "rumput_tinggi",
+      "x": -1259.1,
+      "y": -781.6,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_108",
+      "type": "pohon_pinus",
+      "x": -610.4,
+      "y": -772.6,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_109",
+      "type": "pohon_pinus",
+      "x": -768.6,
+      "y": -706.1,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_110",
+      "type": "pohon_pinus",
+      "x": -563.0,
+      "y": -685.9,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_111",
+      "type": "pohon_pinus",
+      "x": -799.1,
+      "y": -823.4,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_112",
+      "type": "pohon_besar",
+      "x": -658.6,
+      "y": -688.2,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_113",
+      "type": "pohon_pinus",
+      "x": -696.1,
+      "y": -802.0,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_114",
+      "type": "pohon_pinus",
+      "x": -842.9,
+      "y": -654.7,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_115",
+      "type": "pohon_besar",
+      "x": -622.6,
+      "y": -854.9,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_116",
+      "type": "pohon_pinus",
+      "x": -708.1,
+      "y": -624.8,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_117",
+      "type": "pohon_pinus",
+      "x": -549.2,
+      "y": -814.3,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_118",
+      "type": "pohon_besar",
+      "x": -844.2,
+      "y": -747.4,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_119",
+      "type": "pohon_besar",
+      "x": -619.2,
+      "y": -621.8,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_120",
+      "type": "rumput_tinggi",
+      "x": -863.8,
+      "y": -846.0,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_121",
+      "type": "semak_bulat",
+      "x": -673.4,
+      "y": -744.6,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_122",
+      "type": "batu_kecil",
+      "x": -772.7,
+      "y": -632.2,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_123",
+      "type": "semak_kecil",
+      "x": -769.0,
+      "y": -769.3,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_124",
+      "type": "batu_kecil",
+      "x": -714.5,
+      "y": -738.1,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_125",
+      "type": "rumput_tinggi",
+      "x": -714.2,
+      "y": -855.0,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_126",
+      "type": "semak_bulat",
+      "x": -556.2,
+      "y": -742.3,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_127",
+      "type": "pohon_pinus",
+      "x": -349.4,
+      "y": -845.9,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_128",
+      "type": "pohon_besar",
+      "x": -435.8,
+      "y": -792.3,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_129",
+      "type": "pohon_pinus",
+      "x": -210.7,
+      "y": -790.0,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_130",
+      "type": "pohon_pinus",
+      "x": -161.8,
+      "y": -853.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_131",
+      "type": "pohon_besar",
+      "x": -217.9,
+      "y": -714.2,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_132",
+      "type": "pohon_pinus",
+      "x": -275.4,
+      "y": -845.5,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_133",
+      "type": "pohon_besar",
+      "x": -180.8,
+      "y": -644.1,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_134",
+      "type": "pohon_besar",
+      "x": -331.4,
+      "y": -771.0,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_135",
+      "type": "pohon_besar",
+      "x": -480.2,
+      "y": -857.0,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_136",
+      "type": "batu_kecil",
+      "x": -275.3,
+      "y": -720.7,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_137",
+      "type": "batu_kecil",
+      "x": -468.8,
+      "y": -744.9,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_138",
+      "type": "rumput_tinggi",
+      "x": -246.6,
+      "y": -655.1,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_139",
+      "type": "semak_bulat",
+      "x": -496.8,
+      "y": -775.3,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_140",
+      "type": "semak_bulat",
+      "x": -271.0,
+      "y": -623.1,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_141",
+      "type": "semak_kecil",
+      "x": -395.3,
+      "y": -738.8,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_142",
+      "type": "semak_bulat",
+      "x": -514.1,
+      "y": -741.7,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_143",
+      "type": "batu_kecil",
+      "x": -219.8,
+      "y": -856.0,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_144",
+      "type": "semak_kecil",
+      "x": -513.3,
+      "y": -647.6,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_145",
+      "type": "semak_kecil",
+      "x": -409.9,
+      "y": -859.0,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_146",
+      "type": "semak_kecil",
+      "x": -160.6,
+      "y": -740.0,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_147",
+      "type": "semak_bulat",
+      "x": -281.7,
+      "y": -685.2,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_148",
+      "type": "rumput_tinggi",
+      "x": -273.3,
+      "y": -789.4,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_149",
+      "type": "semak_bulat",
+      "x": -437.7,
+      "y": -724.5,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_150",
+      "type": "pohon_pinus",
+      "x": 0.2,
+      "y": -760.4,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_151",
+      "type": "pohon_pinus",
+      "x": -72.3,
+      "y": -713.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_152",
+      "type": "pohon_pinus",
+      "x": 190.9,
+      "y": -699.7,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_153",
+      "type": "pohon_besar",
+      "x": 131.3,
+      "y": -811.8,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_154",
+      "type": "pohon_besar",
+      "x": 39.1,
+      "y": -639.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_155",
+      "type": "pohon_pinus",
+      "x": -89.4,
+      "y": -798.1,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_156",
+      "type": "pohon_pinus",
+      "x": 125.4,
+      "y": -653.2,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_157",
+      "type": "pohon_pinus",
+      "x": 65.1,
+      "y": -846.2,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_158",
+      "type": "pohon_besar",
+      "x": 88.7,
+      "y": -749.8,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_159",
+      "type": "pohon_besar",
+      "x": -96.3,
+      "y": -621.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_160",
+      "type": "pohon_besar",
+      "x": 212.3,
+      "y": -620.7,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_161",
+      "type": "pohon_pinus",
+      "x": 204.0,
+      "y": -839.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_162",
+      "type": "pohon_besar",
+      "x": -23.4,
+      "y": -849.0,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_163",
+      "type": "batu_kecil",
+      "x": -16.9,
+      "y": -610.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_164",
+      "type": "semak_bulat",
+      "x": -135.6,
+      "y": -679.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_165",
+      "type": "semak_kecil",
+      "x": 78.2,
+      "y": -684.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_166",
+      "type": "batu_kecil",
+      "x": -45.0,
+      "y": -647.1,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_167",
+      "type": "semak_bulat",
+      "x": 192.7,
+      "y": -778.5,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_168",
+      "type": "batu_kecil",
+      "x": 160.8,
+      "y": -753.2,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_169",
+      "type": "semak_kecil",
+      "x": -1.0,
+      "y": -703.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_170",
+      "type": "batu_kecil",
+      "x": -135.8,
+      "y": -766.2,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_171",
+      "type": "semak_bulat",
+      "x": 218.5,
+      "y": -750.5,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_172",
+      "type": "rumput_tinggi",
+      "x": 35.8,
+      "y": -703.1,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_173",
+      "type": "pohon_pinus",
+      "x": 288.3,
+      "y": -737.7,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_174",
+      "type": "pohon_pinus",
+      "x": 516.8,
+      "y": -683.5,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_175",
+      "type": "pohon_pinus",
+      "x": 417.6,
+      "y": -634.8,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_176",
+      "type": "pohon_besar",
+      "x": 506.3,
+      "y": -837.8,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_177",
+      "type": "pohon_besar",
+      "x": 356.8,
+      "y": -784.9,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_178",
+      "type": "pohon_besar",
+      "x": 428.5,
+      "y": -743.7,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_179",
+      "type": "pohon_besar",
+      "x": 599.6,
+      "y": -784.9,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_180",
+      "type": "pohon_pinus",
+      "x": 297.3,
+      "y": -657.1,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_181",
+      "type": "pohon_pinus",
+      "x": 607.9,
+      "y": -703.0,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_182",
+      "type": "pohon_pinus",
+      "x": 586.8,
+      "y": -615.6,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_183",
+      "type": "pohon_pinus",
+      "x": 405.4,
+      "y": -846.3,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_184",
+      "type": "pohon_besar",
+      "x": 294.5,
+      "y": -832.8,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_185",
+      "type": "pohon_besar",
+      "x": 503.9,
+      "y": -763.7,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_186",
+      "type": "semak_bulat",
+      "x": 375.7,
+      "y": -698.0,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_187",
+      "type": "semak_kecil",
+      "x": 512.9,
+      "y": -619.6,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_188",
+      "type": "semak_kecil",
+      "x": 345.1,
+      "y": -613.2,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_189",
+      "type": "semak_kecil",
+      "x": 565.2,
+      "y": -845.8,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_190",
+      "type": "rumput_tinggi",
+      "x": 557.3,
+      "y": -732.1,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_191",
+      "type": "semak_bulat",
+      "x": 361.8,
+      "y": -653.3,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_192",
+      "type": "semak_kecil",
+      "x": 443.4,
+      "y": -685.9,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_193",
+      "type": "rumput_tinggi",
+      "x": 457.8,
+      "y": -799.5,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_194",
+      "type": "semak_kecil",
+      "x": 254.3,
+      "y": -790.6,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_195",
+      "type": "rumput_tinggi",
+      "x": 250.0,
+      "y": -694.3,
+      "nearestNodeId": "node_04",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_196",
+      "type": "batu_kecil",
+      "x": 470.5,
+      "y": -614.8,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_197",
+      "type": "pohon_pinus",
+      "x": 887.5,
+      "y": -757.3,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_198",
+      "type": "pohon_besar",
+      "x": 856.5,
+      "y": -619.5,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_199",
+      "type": "pohon_pinus",
+      "x": 958.9,
+      "y": -728.8,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_200",
+      "type": "pohon_pinus",
+      "x": 682.0,
+      "y": -778.5,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_201",
+      "type": "pohon_besar",
+      "x": 728.2,
+      "y": -663.6,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_202",
+      "type": "pohon_besar",
+      "x": 989.5,
+      "y": -607.7,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_203",
+      "type": "pohon_besar",
+      "x": 764.5,
+      "y": -795.8,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_204",
+      "type": "pohon_pinus",
+      "x": 918.4,
+      "y": -826.9,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_205",
+      "type": "pohon_pinus",
+      "x": 810.1,
+      "y": -723.3,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_206",
+      "type": "pohon_pinus",
+      "x": 686.6,
+      "y": -592.3,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_207",
+      "type": "pohon_besar",
+      "x": 1005.5,
+      "y": -786.6,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_208",
+      "type": "pohon_besar",
+      "x": 780.9,
+      "y": -602.3,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_209",
+      "type": "pohon_besar",
+      "x": 835.9,
+      "y": -829.8,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_210",
+      "type": "semak_bulat",
+      "x": 928.8,
+      "y": -659.4,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_211",
+      "type": "semak_kecil",
+      "x": 737.3,
+      "y": -730.3,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_212",
+      "type": "batu_kecil",
+      "x": 664.1,
+      "y": -689.5,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_213",
+      "type": "batu_kecil",
+      "x": 660.2,
+      "y": -645.7,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_214",
+      "type": "semak_kecil",
+      "x": 692.7,
+      "y": -718.4,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_215",
+      "type": "semak_kecil",
+      "x": 986.0,
+      "y": -664.9,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_216",
+      "type": "rumput_tinggi",
+      "x": 810.4,
+      "y": -665.4,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_217",
+      "type": "semak_bulat",
+      "x": 848.5,
+      "y": -681.9,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_218",
+      "type": "rumput_tinggi",
+      "x": 889.4,
+      "y": -692.2,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_219",
+      "type": "semak_kecil",
+      "x": 918.9,
+      "y": -604.0,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_220",
+      "type": "rumput_tinggi",
+      "x": 1014.8,
+      "y": -702.4,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_221",
+      "type": "pohon_pinus",
+      "x": 1245.3,
+      "y": -651.5,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_222",
+      "type": "pohon_pinus",
+      "x": 1099.3,
+      "y": -603.5,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_223",
+      "type": "pohon_pinus",
+      "x": 1167.0,
+      "y": -703.0,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_224",
+      "type": "pohon_besar",
+      "x": 1327.1,
+      "y": -619.8,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_225",
+      "type": "pohon_besar",
+      "x": 1169.1,
+      "y": -570.3,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_226",
+      "type": "pohon_pinus",
+      "x": 1239.3,
+      "y": -746.9,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_227",
+      "type": "pohon_besar",
+      "x": 1389.7,
+      "y": -723.2,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_228",
+      "type": "pohon_besar",
+      "x": 1330.7,
+      "y": -772.8,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_229",
+      "type": "pohon_besar",
+      "x": 1073.3,
+      "y": -692.5,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_230",
+      "type": "pohon_besar",
+      "x": 1098.2,
+      "y": -770.0,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_231",
+      "type": "pohon_pinus",
+      "x": 1184.1,
+      "y": -805.5,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_232",
+      "type": "pohon_pinus",
+      "x": 1314.9,
+      "y": -695.5,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_233",
+      "type": "pohon_besar",
+      "x": 1260.2,
+      "y": -573.6,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_234",
+      "type": "semak_kecil",
+      "x": 1272.5,
+      "y": -803.1,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_235",
+      "type": "batu_kecil",
+      "x": 1040.5,
+      "y": -644.5,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_236",
+      "type": "batu_kecil",
+      "x": 1044.5,
+      "y": -581.0,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_237",
+      "type": "semak_bulat",
+      "x": 1376.1,
+      "y": -649.4,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_238",
+      "type": "batu_kecil",
+      "x": 1381.9,
+      "y": -605.9,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_239",
+      "type": "semak_kecil",
+      "x": 1191.6,
+      "y": -623.2,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_240",
+      "type": "batu_kecil",
+      "x": 1380.8,
+      "y": -802.2,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_241",
+      "type": "semak_bulat",
+      "x": 1041.8,
+      "y": -740.1,
+      "nearestNodeId": "node_05",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_242",
+      "type": "rumput_tinggi",
+      "x": 1152.0,
+      "y": -630.1,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_243",
+      "type": "pohon_besar",
+      "x": 1557.3,
+      "y": -695.6,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_244",
+      "type": "pohon_pinus",
+      "x": 1472.2,
+      "y": -523.9,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_245",
+      "type": "pohon_besar",
+      "x": 1581.6,
+      "y": -600.1,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_246",
+      "type": "pohon_besar",
+      "x": 1611.8,
+      "y": -516.7,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_247",
+      "type": "pohon_besar",
+      "x": 1471.2,
+      "y": -725.4,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_248",
+      "type": "pohon_pinus",
+      "x": 1459.8,
+      "y": -598.0,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_249",
+      "type": "pohon_pinus",
+      "x": 1375.5,
+      "y": -523.8,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_250",
+      "type": "semak_kecil",
+      "x": 1490.0,
+      "y": -661.9,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_251",
+      "type": "semak_bulat",
+      "x": 1549.2,
+      "y": -535.7,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_252",
+      "type": "batu_kecil",
+      "x": 1438.5,
+      "y": -676.0,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_253",
+      "type": "semak_bulat",
+      "x": 1509.2,
+      "y": -626.6,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_254",
+      "type": "semak_bulat",
+      "x": 1279.2,
+      "y": -515.5,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_255",
+      "type": "rumput_tinggi",
+      "x": 1611.9,
+      "y": -678.6,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_256",
+      "type": "rumput_tinggi",
+      "x": 1527.2,
+      "y": -566.7,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_257",
+      "type": "batu_kecil",
+      "x": 1619.7,
+      "y": -741.5,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_258",
+      "type": "semak_kecil",
+      "x": 1408.0,
+      "y": -630.8,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_259",
+      "type": "rumput_tinggi",
+      "x": 1320.0,
+      "y": -510.1,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_260",
+      "type": "semak_kecil",
+      "x": 1325.7,
+      "y": -551.2,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_261",
+      "type": "pohon_pinus",
+      "x": -1598.5,
+      "y": -343.1,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_262",
+      "type": "pohon_pinus",
+      "x": -1392.7,
+      "y": -270.4,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_263",
+      "type": "pohon_pinus",
+      "x": -1385.8,
+      "y": -368.4,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_264",
+      "type": "pohon_besar",
+      "x": -1477.3,
+      "y": -306.9,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_265",
+      "type": "pohon_pinus",
+      "x": -1544.9,
+      "y": -224.2,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_266",
+      "type": "pohon_pinus",
+      "x": -1533.0,
+      "y": -442.6,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_267",
+      "type": "pohon_pinus",
+      "x": -1307.7,
+      "y": -302.4,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_268",
+      "type": "pohon_besar",
+      "x": -1374.6,
+      "y": -456.3,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_269",
+      "type": "pohon_besar",
+      "x": -1622.0,
+      "y": -455.1,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_270",
+      "type": "pohon_besar",
+      "x": -1294.7,
+      "y": -387.8,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_271",
+      "type": "pohon_pinus",
+      "x": -1607.4,
+      "y": -267.1,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_272",
+      "type": "pohon_pinus",
+      "x": -1447.3,
+      "y": -430.0,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_273",
+      "type": "rumput_tinggi",
+      "x": -1627.8,
+      "y": -391.4,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_274",
+      "type": "semak_kecil",
+      "x": -1488.0,
+      "y": -234.1,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_275",
+      "type": "rumput_tinggi",
+      "x": -1558.0,
+      "y": -296.1,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_276",
+      "type": "semak_kecil",
+      "x": -1583.4,
+      "y": -409.2,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_277",
+      "type": "semak_kecil",
+      "x": -1518.4,
+      "y": -374.4,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_278",
+      "type": "rumput_tinggi",
+      "x": -1272.4,
+      "y": -441.7,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_279",
+      "type": "rumput_tinggi",
+      "x": -1424.5,
+      "y": -326.1,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_280",
+      "type": "semak_kecil",
+      "x": -1439.0,
+      "y": -221.9,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_281",
+      "type": "semak_kecil",
+      "x": -1453.4,
+      "y": -367.2,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_282",
+      "type": "semak_kecil",
+      "x": -1308.5,
+      "y": -453.4,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_283",
+      "type": "pohon_besar",
+      "x": -1532.7,
+      "y": 119.3,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_284",
+      "type": "pohon_pinus",
+      "x": -1347.1,
+      "y": 34.4,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_285",
+      "type": "pohon_pinus",
+      "x": -1567.1,
+      "y": -38.8,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_286",
+      "type": "pohon_besar",
+      "x": -1406.6,
+      "y": 101.3,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_287",
+      "type": "pohon_pinus",
+      "x": -1466.2,
+      "y": -49.0,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_288",
+      "type": "pohon_besar",
+      "x": -1590.3,
+      "y": 38.0,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_289",
+      "type": "pohon_besar",
+      "x": -1638.4,
+      "y": 96.3,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_290",
+      "type": "pohon_besar",
+      "x": -1359.5,
+      "y": -84.7,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_291",
+      "type": "pohon_pinus",
+      "x": -1299.7,
+      "y": -33.0,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_292",
+      "type": "pohon_pinus",
+      "x": -1511.7,
+      "y": 23.3,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_293",
+      "type": "pohon_besar",
+      "x": -1290.6,
+      "y": 115.1,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_294",
+      "type": "pohon_besar",
+      "x": -1437.6,
+      "y": 21.4,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_295",
+      "type": "semak_bulat",
+      "x": -1588.4,
+      "y": 128.7,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_296",
+      "type": "rumput_tinggi",
+      "x": -1481.3,
+      "y": 148.4,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_297",
+      "type": "semak_kecil",
+      "x": -1520.2,
+      "y": -75.5,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_298",
+      "type": "semak_kecil",
+      "x": -1627.8,
+      "y": -24.2,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_299",
+      "type": "semak_bulat",
+      "x": -1636.6,
+      "y": -76.0,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_300",
+      "type": "semak_kecil",
+      "x": -1343.5,
+      "y": 149.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_301",
+      "type": "batu_kecil",
+      "x": -1387.8,
+      "y": -20.5,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_302",
+      "type": "rumput_tinggi",
+      "x": -1463.7,
+      "y": 87.9,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_303",
+      "type": "batu_kecil",
+      "x": -1420.9,
+      "y": -89.3,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_304",
+      "type": "semak_kecil",
+      "x": -1596.9,
+      "y": -87.2,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_305",
+      "type": "rumput_tinggi",
+      "x": -1292.7,
+      "y": 48.2,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_306",
+      "type": "semak_kecil",
+      "x": -1346.9,
+      "y": 98.2,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_307",
+      "type": "pohon_pinus",
+      "x": -1450.2,
+      "y": 445.3,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_308",
+      "type": "pohon_besar",
+      "x": -1348.5,
+      "y": 425.3,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_309",
+      "type": "pohon_besar",
+      "x": -1627.7,
+      "y": 477.6,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_310",
+      "type": "pohon_besar",
+      "x": -1359.6,
+      "y": 529.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_311",
+      "type": "pohon_pinus",
+      "x": -1521.6,
+      "y": 374.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_312",
+      "type": "pohon_besar",
+      "x": -1469.7,
+      "y": 315.3,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_313",
+      "type": "pohon_pinus",
+      "x": -1633.2,
+      "y": 387.0,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_314",
+      "type": "pohon_besar",
+      "x": -1344.7,
+      "y": 312.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_315",
+      "type": "pohon_pinus",
+      "x": -1504.0,
+      "y": 509.4,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_316",
+      "type": "pohon_besar",
+      "x": -1587.8,
+      "y": 315.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_317",
+      "type": "pohon_pinus",
+      "x": -1291.9,
+      "y": 498.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_318",
+      "type": "pohon_pinus",
+      "x": -1578.7,
+      "y": 534.7,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_319",
+      "type": "semak_bulat",
+      "x": -1507.5,
+      "y": 440.4,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_320",
+      "type": "semak_kecil",
+      "x": -1396.0,
+      "y": 388.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_321",
+      "type": "semak_bulat",
+      "x": -1300.6,
+      "y": 382.7,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_322",
+      "type": "semak_kecil",
+      "x": -1459.7,
+      "y": 382.6,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_323",
+      "type": "semak_bulat",
+      "x": -1551.0,
+      "y": 447.1,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_324",
+      "type": "semak_kecil",
+      "x": -1424.9,
+      "y": 352.5,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_325",
+      "type": "semak_kecil",
+      "x": -1396.6,
+      "y": 464.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_326",
+      "type": "semak_kecil",
+      "x": -1424.6,
+      "y": 536.1,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_327",
+      "type": "rumput_tinggi",
+      "x": -1291.0,
+      "y": 441.1,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_328",
+      "type": "semak_bulat",
+      "x": -1288.3,
+      "y": 342.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_329",
+      "type": "semak_bulat",
+      "x": -1529.8,
+      "y": 305.2,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_330",
+      "type": "semak_kecil",
+      "x": -1588.7,
+      "y": 425.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_331",
+      "type": "pohon_pinus",
+      "x": -1186.5,
+      "y": 679.5,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_332",
+      "type": "pohon_pinus",
+      "x": -1458.0,
+      "y": 658.6,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_333",
+      "type": "pohon_besar",
+      "x": -1310.0,
+      "y": 590.7,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_334",
+      "type": "pohon_pinus",
+      "x": -1316.2,
+      "y": 700.4,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_335",
+      "type": "pohon_besar",
+      "x": -1216.9,
+      "y": 797.6,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_336",
+      "type": "pohon_besar",
+      "x": -1231.1,
+      "y": 611.1,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_337",
+      "type": "pohon_pinus",
+      "x": -1398.4,
+      "y": 757.5,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_338",
+      "type": "pohon_besar",
+      "x": -1460.8,
+      "y": 811.2,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_339",
+      "type": "pohon_besar",
+      "x": -1307.0,
+      "y": 797.7,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_340",
+      "type": "pohon_pinus",
+      "x": -1379.5,
+      "y": 648.9,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_341",
+      "type": "pohon_pinus",
+      "x": -1496.1,
+      "y": 745.0,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_342",
+      "type": "pohon_besar",
+      "x": -1530.9,
+      "y": 603.5,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_343",
+      "type": "rumput_tinggi",
+      "x": -1279.5,
+      "y": 651.0,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_344",
+      "type": "semak_kecil",
+      "x": -1247.5,
+      "y": 735.6,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_345",
+      "type": "semak_kecil",
+      "x": -1539.2,
+      "y": 663.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_346",
+      "type": "semak_bulat",
+      "x": -1203.1,
+      "y": 742.8,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_347",
+      "type": "semak_bulat",
+      "x": -1423.2,
+      "y": 703.7,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_348",
+      "type": "batu_kecil",
+      "x": -1422.4,
+      "y": 587.1,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_349",
+      "type": "semak_kecil",
+      "x": -1521.9,
+      "y": 798.8,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_350",
+      "type": "batu_kecil",
+      "x": -1374.5,
+      "y": 815.8,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_351",
+      "type": "batu_kecil",
+      "x": -1368.0,
+      "y": 586.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_352",
+      "type": "rumput_tinggi",
+      "x": -1464.2,
+      "y": 582.7,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_353",
+      "type": "rumput_tinggi",
+      "x": -1247.0,
+      "y": 670.6,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_354",
+      "type": "pohon_pinus",
+      "x": -1120.4,
+      "y": 736.9,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_355",
+      "type": "pohon_besar",
+      "x": -861.7,
+      "y": 794.3,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_356",
+      "type": "pohon_besar",
+      "x": -851.1,
+      "y": 664.5,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_357",
+      "type": "pohon_pinus",
+      "x": -958.0,
+      "y": 825.0,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_358",
+      "type": "pohon_besar",
+      "x": -1009.3,
+      "y": 678.8,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_359",
+      "type": "pohon_pinus",
+      "x": -966.0,
+      "y": 746.5,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_360",
+      "type": "pohon_pinus",
+      "x": -1081.2,
+      "y": 825.2,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_361",
+      "type": "pohon_pinus",
+      "x": -1086.4,
+      "y": 649.2,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_362",
+      "type": "pohon_besar",
+      "x": -952.3,
+      "y": 620.2,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_363",
+      "type": "pohon_pinus",
+      "x": -1047.0,
+      "y": 756.1,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_364",
+      "type": "pohon_pinus",
+      "x": -1160.1,
+      "y": 858.0,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_365",
+      "type": "pohon_pinus",
+      "x": -814.4,
+      "y": 730.9,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_366",
+      "type": "pohon_besar",
+      "x": -894.8,
+      "y": 724.4,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_367",
+      "type": "rumput_tinggi",
+      "x": -909.6,
+      "y": 857.9,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_368",
+      "type": "semak_kecil",
+      "x": -1161.2,
+      "y": 778.2,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_369",
+      "type": "semak_kecil",
+      "x": -823.1,
+      "y": 850.0,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_370",
+      "type": "semak_kecil",
+      "x": -1033.9,
+      "y": 620.3,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_371",
+      "type": "batu_kecil",
+      "x": -928.8,
+      "y": 672.8,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_372",
+      "type": "batu_kecil",
+      "x": -1135.3,
+      "y": 621.9,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_373",
+      "type": "rumput_tinggi",
+      "x": -1004.9,
+      "y": 793.9,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_374",
+      "type": "pohon_pinus",
+      "x": -412.5,
+      "y": 742.8,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_375",
+      "type": "pohon_pinus",
+      "x": -403.1,
+      "y": 855.4,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_376",
+      "type": "pohon_pinus",
+      "x": -524.5,
+      "y": 823.5,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_377",
+      "type": "pohon_besar",
+      "x": -623.2,
+      "y": 783.5,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_378",
+      "type": "pohon_besar",
+      "x": -696.2,
+      "y": 811.0,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_379",
+      "type": "pohon_pinus",
+      "x": -739.3,
+      "y": 655.9,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_380",
+      "type": "pohon_pinus",
+      "x": -545.8,
+      "y": 714.3,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_381",
+      "type": "pohon_besar",
+      "x": -635.6,
+      "y": 709.3,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_382",
+      "type": "pohon_pinus",
+      "x": -560.2,
+      "y": 632.3,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_383",
+      "type": "pohon_pinus",
+      "x": -616.8,
+      "y": 859.1,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_384",
+      "type": "pohon_pinus",
+      "x": -740.2,
+      "y": 746.4,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_385",
+      "type": "pohon_pinus",
+      "x": -646.1,
+      "y": 630.1,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_386",
+      "type": "pohon_pinus",
+      "x": -759.8,
+      "y": 855.2,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_387",
+      "type": "pohon_pinus",
+      "x": -488.8,
+      "y": 658.4,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_388",
+      "type": "rumput_tinggi",
+      "x": -498.9,
+      "y": 748.1,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_389",
+      "type": "batu_kecil",
+      "x": -412.7,
+      "y": 686.6,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_390",
+      "type": "semak_kecil",
+      "x": -463.5,
+      "y": 866.3,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_391",
+      "type": "semak_kecil",
+      "x": -564.1,
+      "y": 776.4,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_392",
+      "type": "semak_bulat",
+      "x": -446.6,
+      "y": 805.3,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_393",
+      "type": "batu_kecil",
+      "x": -465.9,
+      "y": 766.9,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_394",
+      "type": "rumput_tinggi",
+      "x": -683.8,
+      "y": 869.0,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_395",
+      "type": "rumput_tinggi",
+      "x": -689.2,
+      "y": 682.4,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_396",
+      "type": "batu_kecil",
+      "x": -680.0,
+      "y": 753.9,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_397",
+      "type": "pohon_pinus",
+      "x": -84.4,
+      "y": 766.6,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_398",
+      "type": "pohon_besar",
+      "x": -283.9,
+      "y": 831.9,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_399",
+      "type": "pohon_besar",
+      "x": -157.0,
+      "y": 790.8,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_400",
+      "type": "pohon_pinus",
+      "x": -239.6,
+      "y": 741.7,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_401",
+      "type": "pohon_besar",
+      "x": -88.1,
+      "y": 871.5,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_402",
+      "type": "pohon_pinus",
+      "x": -313.1,
+      "y": 705.5,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_403",
+      "type": "pohon_besar",
+      "x": 35.2,
+      "y": 726.9,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_404",
+      "type": "pohon_besar",
+      "x": -143.7,
+      "y": 710.7,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_405",
+      "type": "pohon_pinus",
+      "x": 32.3,
+      "y": 849.5,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_406",
+      "type": "pohon_pinus",
+      "x": 20.3,
+      "y": 651.2,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_407",
+      "type": "pohon_pinus",
+      "x": -71.7,
+      "y": 682.5,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_408",
+      "type": "pohon_pinus",
+      "x": -184.5,
+      "y": 644.1,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_409",
+      "type": "pohon_besar",
+      "x": -194.0,
+      "y": 859.3,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_410",
+      "type": "pohon_besar",
+      "x": -10.9,
+      "y": 785.3,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_411",
+      "type": "batu_kecil",
+      "x": -244.9,
+      "y": 653.8,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_412",
+      "type": "rumput_tinggi",
+      "x": -226.5,
+      "y": 687.2,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_413",
+      "type": "rumput_tinggi",
+      "x": -319.4,
+      "y": 771.7,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_414",
+      "type": "semak_bulat",
+      "x": -234.9,
+      "y": 800.9,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_415",
+      "type": "semak_kecil",
+      "x": -32.4,
+      "y": 855.3,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_416",
+      "type": "semak_bulat",
+      "x": -28.3,
+      "y": 721.0,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_417",
+      "type": "batu_kecil",
+      "x": -251.3,
+      "y": 877.9,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_418",
+      "type": "pohon_besar",
+      "x": 208.0,
+      "y": 651.3,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_419",
+      "type": "pohon_pinus",
+      "x": 112.7,
+      "y": 757.9,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_420",
+      "type": "pohon_pinus",
+      "x": 288.9,
+      "y": 687.3,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_421",
+      "type": "pohon_besar",
+      "x": 358.0,
+      "y": 758.2,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_422",
+      "type": "pohon_pinus",
+      "x": 325.9,
+      "y": 874.3,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_423",
+      "type": "pohon_besar",
+      "x": 384.6,
+      "y": 660.3,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_424",
+      "type": "pohon_pinus",
+      "x": 190.1,
+      "y": 758.6,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_425",
+      "type": "pohon_besar",
+      "x": 245.9,
+      "y": 821.7,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_426",
+      "type": "pohon_besar",
+      "x": 462.1,
+      "y": 657.0,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_427",
+      "type": "pohon_besar",
+      "x": 408.0,
+      "y": 840.5,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_428",
+      "type": "pohon_besar",
+      "x": 124.6,
+      "y": 836.4,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_429",
+      "type": "pohon_besar",
+      "x": 116.0,
+      "y": 681.6,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_430",
+      "type": "pohon_pinus",
+      "x": 440.8,
+      "y": 772.2,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_431",
+      "type": "pohon_besar",
+      "x": 193.7,
+      "y": 874.9,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_432",
+      "type": "batu_kecil",
+      "x": 436.6,
+      "y": 707.7,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_433",
+      "type": "batu_kecil",
+      "x": 277.8,
+      "y": 775.3,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_434",
+      "type": "semak_kecil",
+      "x": 342.8,
+      "y": 816.1,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_435",
+      "type": "semak_kecil",
+      "x": 469.9,
+      "y": 870.1,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_436",
+      "type": "semak_bulat",
+      "x": 254.2,
+      "y": 740.0,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_437",
+      "type": "semak_kecil",
+      "x": 465.6,
+      "y": 823.2,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_438",
+      "type": "semak_bulat",
+      "x": 402.6,
+      "y": 723.1,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_439",
+      "type": "semak_kecil",
+      "x": 182.1,
+      "y": 814.1,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_440",
+      "type": "semak_bulat",
+      "x": 301.9,
+      "y": 806.8,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_441",
+      "type": "rumput_tinggi",
+      "x": 220.0,
+      "y": 709.3,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_442",
+      "type": "pohon_besar",
+      "x": 813.1,
+      "y": 786.1,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_443",
+      "type": "pohon_pinus",
+      "x": 691.3,
+      "y": 793.5,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_444",
+      "type": "pohon_pinus",
+      "x": 848.6,
+      "y": 707.6,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_445",
+      "type": "pohon_besar",
+      "x": 616.1,
+      "y": 678.1,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_446",
+      "type": "pohon_pinus",
+      "x": 753.5,
+      "y": 725.6,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_447",
+      "type": "pohon_besar",
+      "x": 603.4,
+      "y": 848.6,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_448",
+      "type": "pohon_pinus",
+      "x": 899.6,
+      "y": 842.4,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_449",
+      "type": "pohon_pinus",
+      "x": 800.3,
+      "y": 863.5,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_450",
+      "type": "pohon_pinus",
+      "x": 607.6,
+      "y": 763.8,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_451",
+      "type": "pohon_besar",
+      "x": 718.1,
+      "y": 630.7,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_452",
+      "type": "pohon_pinus",
+      "x": 840.5,
+      "y": 632.4,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_453",
+      "type": "pohon_pinus",
+      "x": 716.2,
+      "y": 868.4,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_454",
+      "type": "pohon_besar",
+      "x": 553.2,
+      "y": 638.0,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_455",
+      "type": "rumput_tinggi",
+      "x": 907.5,
+      "y": 665.8,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_456",
+      "type": "rumput_tinggi",
+      "x": 676.6,
+      "y": 708.1,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_457",
+      "type": "rumput_tinggi",
+      "x": 553.2,
+      "y": 743.3,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_458",
+      "type": "semak_kecil",
+      "x": 775.0,
+      "y": 670.2,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_459",
+      "type": "batu_kecil",
+      "x": 902.8,
+      "y": 731.6,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_460",
+      "type": "batu_kecil",
+      "x": 563.7,
+      "y": 804.5,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_461",
+      "type": "semak_bulat",
+      "x": 881.3,
+      "y": 762.3,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_462",
+      "type": "semak_bulat",
+      "x": 660.3,
+      "y": 841.3,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_463",
+      "type": "batu_kecil",
+      "x": 755.6,
+      "y": 815.6,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_464",
+      "type": "batu_kecil",
+      "x": 705.4,
+      "y": 686.6,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_465",
+      "type": "semak_kecil",
+      "x": 566.8,
+      "y": 706.7,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_466",
+      "type": "pohon_besar",
+      "x": 999.9,
+      "y": 624.3,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_467",
+      "type": "pohon_besar",
+      "x": 1155.0,
+      "y": 656.2,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_468",
+      "type": "pohon_besar",
+      "x": 965.3,
+      "y": 730.7,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_469",
+      "type": "pohon_pinus",
+      "x": 1319.7,
+      "y": 645.4,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_470",
+      "type": "pohon_pinus",
+      "x": 1106.2,
+      "y": 734.7,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_471",
+      "type": "pohon_besar",
+      "x": 1142.2,
+      "y": 848.6,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_472",
+      "type": "pohon_besar",
+      "x": 1204.2,
+      "y": 747.3,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_473",
+      "type": "pohon_besar",
+      "x": 1308.6,
+      "y": 798.6,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_474",
+      "type": "pohon_pinus",
+      "x": 1003.4,
+      "y": 808.4,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_475",
+      "type": "pohon_besar",
+      "x": 1276.4,
+      "y": 723.5,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_476",
+      "type": "pohon_pinus",
+      "x": 1227.1,
+      "y": 632.8,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_477",
+      "type": "pohon_besar",
+      "x": 1079.9,
+      "y": 619.1,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_478",
+      "type": "pohon_pinus",
+      "x": 1234.8,
+      "y": 830.0,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_479",
+      "type": "pohon_besar",
+      "x": 1042.5,
+      "y": 694.1,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_480",
+      "type": "batu_kecil",
+      "x": 1043.8,
+      "y": 750.9,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_481",
+      "type": "batu_kecil",
+      "x": 1105.9,
+      "y": 801.8,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_482",
+      "type": "rumput_tinggi",
+      "x": 1070.7,
+      "y": 785.4,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_483",
+      "type": "rumput_tinggi",
+      "x": 1159.2,
+      "y": 787.7,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_484",
+      "type": "rumput_tinggi",
+      "x": 1066.1,
+      "y": 839.7,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_485",
+      "type": "semak_bulat",
+      "x": 1203.3,
+      "y": 685.3,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_486",
+      "type": "rumput_tinggi",
+      "x": 960.3,
+      "y": 848.9,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_487",
+      "type": "pohon_pinus",
+      "x": 1483.5,
+      "y": 426.9,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_488",
+      "type": "pohon_pinus",
+      "x": 1409.8,
+      "y": 348.1,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_489",
+      "type": "pohon_besar",
+      "x": 1618.1,
+      "y": 341.5,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_490",
+      "type": "pohon_pinus",
+      "x": 1563.2,
+      "y": 569.7,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_491",
+      "type": "pohon_pinus",
+      "x": 1424.3,
+      "y": 488.8,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_492",
+      "type": "pohon_pinus",
+      "x": 1296.8,
+      "y": 475.8,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_493",
+      "type": "pohon_pinus",
+      "x": 1546.2,
+      "y": 484.1,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_494",
+      "type": "pohon_besar",
+      "x": 1594.6,
+      "y": 419.8,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_495",
+      "type": "pohon_besar",
+      "x": 1312.0,
+      "y": 351.2,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_496",
+      "type": "pohon_pinus",
+      "x": 1296.6,
+      "y": 564.1,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_497",
+      "type": "pohon_besar",
+      "x": 1381.0,
+      "y": 573.9,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_498",
+      "type": "semak_kecil",
+      "x": 1501.2,
+      "y": 556.8,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_499",
+      "type": "semak_bulat",
+      "x": 1635.6,
+      "y": 525.2,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_500",
+      "type": "semak_bulat",
+      "x": 1343.0,
+      "y": 431.6,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_501",
+      "type": "batu_kecil",
+      "x": 1378.2,
+      "y": 440.6,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_502",
+      "type": "semak_bulat",
+      "x": 1564.8,
+      "y": 365.3,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_503",
+      "type": "batu_kecil",
+      "x": 1355.2,
+      "y": 494.9,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_504",
+      "type": "rumput_tinggi",
+      "x": 1624.5,
+      "y": 569.2,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_505",
+      "type": "batu_kecil",
+      "x": 1447.2,
+      "y": 558.3,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_506",
+      "type": "semak_bulat",
+      "x": 1353.5,
+      "y": 394.3,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_507",
+      "type": "semak_bulat",
+      "x": 1480.2,
+      "y": 525.8,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_508",
+      "type": "rumput_tinggi",
+      "x": 1285.1,
+      "y": 410.4,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_509",
+      "type": "pohon_besar",
+      "x": 1403.4,
+      "y": 174.1,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_510",
+      "type": "pohon_besar",
+      "x": 1361.8,
+      "y": -59.6,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_511",
+      "type": "pohon_besar",
+      "x": 1557.4,
+      "y": -30.3,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_512",
+      "type": "pohon_besar",
+      "x": 1647.4,
+      "y": 177.0,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_513",
+      "type": "pohon_pinus",
+      "x": 1383.9,
+      "y": 83.6,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_514",
+      "type": "pohon_pinus",
+      "x": 1587.5,
+      "y": 81.7,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_515",
+      "type": "pohon_besar",
+      "x": 1485.0,
+      "y": 25.3,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_516",
+      "type": "pohon_pinus",
+      "x": 1510.7,
+      "y": 171.4,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_517",
+      "type": "pohon_pinus",
+      "x": 1635.9,
+      "y": -51.5,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_518",
+      "type": "pohon_pinus",
+      "x": 1482.7,
+      "y": -52.4,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_519",
+      "type": "pohon_pinus",
+      "x": 1466.8,
+      "y": 101.4,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_520",
+      "type": "semak_kecil",
+      "x": 1399.4,
+      "y": 28.7,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_521",
+      "type": "semak_bulat",
+      "x": 1436.0,
+      "y": -13.0,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_522",
+      "type": "semak_bulat",
+      "x": 1638.7,
+      "y": 12.3,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_523",
+      "type": "semak_kecil",
+      "x": 1348.3,
+      "y": -2.7,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_524",
+      "type": "batu_kecil",
+      "x": 1567.1,
+      "y": 159.9,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_525",
+      "type": "batu_kecil",
+      "x": 1534.7,
+      "y": 117.1,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_526",
+      "type": "semak_bulat",
+      "x": 1525.8,
+      "y": 81.8,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_527",
+      "type": "semak_kecil",
+      "x": 1643.6,
+      "y": 69.1,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_528",
+      "type": "semak_kecil",
+      "x": 1304.9,
+      "y": -51.0,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_529",
+      "type": "rumput_tinggi",
+      "x": 1347.8,
+      "y": 130.2,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_530",
+      "type": "batu_kecil",
+      "x": 1647.7,
+      "y": 116.2,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_531",
+      "type": "pohon_pinus",
+      "x": 1454.6,
+      "y": -129.2,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_532",
+      "type": "pohon_besar",
+      "x": 1355.8,
+      "y": -207.5,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_533",
+      "type": "pohon_besar",
+      "x": 1422.8,
+      "y": -279.0,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_534",
+      "type": "pohon_besar",
+      "x": 1350.4,
+      "y": -295.0,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_535",
+      "type": "pohon_besar",
+      "x": 1572.7,
+      "y": -218.4,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_536",
+      "type": "pohon_besar",
+      "x": 1567.1,
+      "y": -344.8,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_537",
+      "type": "pohon_besar",
+      "x": 1629.6,
+      "y": -287.4,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_538",
+      "type": "pohon_besar",
+      "x": 1488.6,
+      "y": -320.1,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_539",
+      "type": "pohon_besar",
+      "x": 1610.9,
+      "y": -145.1,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_540",
+      "type": "pohon_besar",
+      "x": 1317.4,
+      "y": -143.3,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_541",
+      "type": "batu_kecil",
+      "x": 1429.3,
+      "y": -342.4,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_542",
+      "type": "rumput_tinggi",
+      "x": 1493.2,
+      "y": -240.8,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_543",
+      "type": "rumput_tinggi",
+      "x": 1546.9,
+      "y": -112.3,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_544",
+      "type": "semak_kecil",
+      "x": 1539.9,
+      "y": -278.1,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_545",
+      "type": "semak_kecil",
+      "x": 1623.2,
+      "y": -347.9,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_546",
+      "type": "batu_kecil",
+      "x": 1429.9,
+      "y": -210.2,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_547",
+      "type": "semak_kecil",
+      "x": 1504.9,
+      "y": -172.7,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_548",
+      "type": "batu_kecil",
+      "x": 1396.7,
+      "y": -110.8,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_549",
+      "type": "semak_kecil",
+      "x": 1414.4,
+      "y": -168.8,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_550",
+      "type": "semak_kecil",
+      "x": 1316.9,
+      "y": -342.1,
+      "nearestNodeId": "node_06",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_551",
+      "type": "pohon_besar",
+      "x": -1056.9,
+      "y": 400.5,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_552",
+      "type": "pohon_pinus",
+      "x": -1168.2,
+      "y": 546.1,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_553",
+      "type": "pohon_besar",
+      "x": -1052.0,
+      "y": 524.6,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_554",
+      "type": "pohon_besar",
+      "x": -1223.7,
+      "y": 405.7,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_555",
+      "type": "pohon_pinus",
+      "x": -1129.9,
+      "y": 464.5,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_556",
+      "type": "pohon_pinus",
+      "x": -1211.7,
+      "y": 482.1,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_557",
+      "type": "batu_kecil",
+      "x": -1113.0,
+      "y": 532.1,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_558",
+      "type": "semak_kecil",
+      "x": -1114.8,
+      "y": 400.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_559",
+      "type": "semak_bulat",
+      "x": -1256.5,
+      "y": 544.7,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_560",
+      "type": "rumput_tinggi",
+      "x": -1064.5,
+      "y": 597.4,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_561",
+      "type": "semak_bulat",
+      "x": -1055.8,
+      "y": 460.7,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_562",
+      "type": "batu_kecil",
+      "x": -1171.6,
+      "y": 603.7,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_563",
+      "type": "batu_kecil",
+      "x": -1166.0,
+      "y": 418.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_564",
+      "type": "rumput_tinggi",
+      "x": -1114.6,
+      "y": 573.2,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_565",
+      "type": "pohon_pinus",
+      "x": 1215.1,
+      "y": 510.6,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_566",
+      "type": "pohon_besar",
+      "x": 1120.8,
+      "y": 495.4,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_567",
+      "type": "pohon_besar",
+      "x": 1158.3,
+      "y": 420.7,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.3,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_568",
+      "type": "pohon_pinus",
+      "x": 1154.6,
+      "y": 562.9,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_569",
+      "type": "pohon_pinus",
+      "x": 1429.2,
+      "y": 633.9,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.28,
+      "sortOffsetY": 28
+    },
+    {
+      "id": "forest_floor_570",
+      "type": "rumput_tinggi",
+      "x": 1475.9,
+      "y": 598.4,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_571",
+      "type": "semak_bulat",
+      "x": 1420.6,
+      "y": 419.8,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_572",
+      "type": "semak_bulat",
+      "x": 1229.2,
+      "y": 428.1,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "forest_floor_573",
+      "type": "semak_kecil",
+      "x": 1218.3,
+      "y": 568.4,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_574",
+      "type": "batu_kecil",
+      "x": -1241.9,
+      "y": 79.3,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_575",
+      "type": "rumput_tinggi",
+      "x": -1189.3,
+      "y": -53.2,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_576",
+      "type": "semak_bulat",
+      "x": -1044.9,
+      "y": 45.5,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_577",
+      "type": "patch_batu_jalan",
+      "x": -1133.4,
+      "y": 26.1,
+      "nearestNodeId": "node_11",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_578",
+      "type": "rumput_tinggi",
+      "x": -1096.2,
+      "y": 2.3,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_579",
+      "type": "batu_kecil",
+      "x": -1017.3,
+      "y": -14.8,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_580",
+      "type": "patch_batu_jalan",
+      "x": -1104.7,
+      "y": -120.3,
+      "nearestNodeId": "node_01",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_581",
+      "type": "semak_kecil",
+      "x": -1226.4,
+      "y": -175.4,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_582",
+      "type": "semak_bulat",
+      "x": -976.1,
+      "y": -121.1,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_583",
+      "type": "rumput_tinggi",
+      "x": -1054.4,
+      "y": -223.7,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_584",
+      "type": "patch_batu_jalan",
+      "x": -1303.0,
+      "y": -169.0,
+      "nearestNodeId": "node_01",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_585",
+      "type": "semak_bulat",
+      "x": -1009.3,
+      "y": -224.1,
+      "nearestNodeId": "node_02",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_586",
+      "type": "rumput_tinggi",
+      "x": -1173.1,
+      "y": -88.6,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_587",
+      "type": "semak_bulat",
+      "x": -1079.7,
+      "y": 78.2,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_588",
+      "type": "patch_batu_jalan",
+      "x": -1253.2,
+      "y": -122.1,
+      "nearestNodeId": "node_01",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_589",
+      "type": "batu_kecil",
+      "x": -1408.6,
+      "y": -51.8,
+      "nearestNodeId": "node_01",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_590",
+      "type": "semak_bulat",
+      "x": -990.7,
+      "y": 15.6,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_591",
+      "type": "semak_kecil",
+      "x": -973.0,
+      "y": 77.2,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_592",
+      "type": "batu_kecil",
+      "x": -1121.3,
+      "y": 292.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_593",
+      "type": "rumput_tinggi",
+      "x": -936.6,
+      "y": 255.1,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_594",
+      "type": "batu_kecil",
+      "x": -1006.8,
+      "y": 429.4,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_595",
+      "type": "semak_kecil",
+      "x": -985.4,
+      "y": 258.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_596",
+      "type": "batu_kecil",
+      "x": -884.8,
+      "y": 453.9,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_597",
+      "type": "rumput_tinggi",
+      "x": -805.3,
+      "y": 329.5,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_598",
+      "type": "semak_kecil",
+      "x": -1024.9,
+      "y": 146.3,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_599",
+      "type": "semak_bulat",
+      "x": -837.3,
+      "y": 219.9,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_600",
+      "type": "batu_kecil",
+      "x": -1065.8,
+      "y": 324.1,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_601",
+      "type": "batu_kecil",
+      "x": -955.1,
+      "y": 208.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_602",
+      "type": "batu_kecil",
+      "x": -1147.3,
+      "y": 324.8,
+      "nearestNodeId": "node_11",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_603",
+      "type": "patch_batu_jalan",
+      "x": -833.5,
+      "y": 454.9,
+      "nearestNodeId": "node_18",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_604",
+      "type": "patch_batu_jalan",
+      "x": -761.0,
+      "y": 366.1,
+      "nearestNodeId": "node_10",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_605",
+      "type": "patch_batu_jalan",
+      "x": -917.8,
+      "y": 395.7,
+      "nearestNodeId": "node_18",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_606",
+      "type": "patch_batu_jalan",
+      "x": -889.7,
+      "y": 146.1,
+      "nearestNodeId": "node_11",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_607",
+      "type": "rumput_tinggi",
+      "x": -751.9,
+      "y": 277.3,
+      "nearestNodeId": "node_10",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_608",
+      "type": "batu_kecil",
+      "x": -779.3,
+      "y": 453.3,
+      "nearestNodeId": "node_18",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_609",
+      "type": "patch_batu_jalan",
+      "x": -858.7,
+      "y": 418.6,
+      "nearestNodeId": "node_18",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_610",
+      "type": "batu_kecil",
+      "x": -333.9,
+      "y": -337.8,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_611",
+      "type": "semak_bulat",
+      "x": -333.4,
+      "y": -377.9,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_612",
+      "type": "batu_kecil",
+      "x": -454.0,
+      "y": -413.2,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_613",
+      "type": "semak_kecil",
+      "x": -307.1,
+      "y": -242.9,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_614",
+      "type": "patch_batu_jalan",
+      "x": -550.2,
+      "y": -363.9,
+      "nearestNodeId": "node_03",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_615",
+      "type": "patch_batu_jalan",
+      "x": -414.7,
+      "y": -197.3,
+      "nearestNodeId": "node_13",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_616",
+      "type": "semak_bulat",
+      "x": -588.6,
+      "y": -151.5,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_617",
+      "type": "rumput_tinggi",
+      "x": -539.5,
+      "y": -290.9,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_618",
+      "type": "patch_batu_jalan",
+      "x": -544.9,
+      "y": -247.2,
+      "nearestNodeId": "node_12",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_619",
+      "type": "batu_kecil",
+      "x": -616.0,
+      "y": -372.8,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_620",
+      "type": "batu_kecil",
+      "x": -532.6,
+      "y": -330.3,
+      "nearestNodeId": "node_03",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_621",
+      "type": "semak_bulat",
+      "x": -623.7,
+      "y": -263.9,
+      "nearestNodeId": "node_12",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_622",
+      "type": "rumput_tinggi",
+      "x": -237.9,
+      "y": -288.1,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_623",
+      "type": "semak_bulat",
+      "x": -374.0,
+      "y": -275.6,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_624",
+      "type": "semak_bulat",
+      "x": -228.1,
+      "y": -361.4,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_625",
+      "type": "semak_bulat",
+      "x": -506.6,
+      "y": -155.6,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_626",
+      "type": "rumput_tinggi",
+      "x": -302.8,
+      "y": -358.7,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_627",
+      "type": "patch_batu_jalan",
+      "x": -458.3,
+      "y": -204.5,
+      "nearestNodeId": "node_13",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_628",
+      "type": "semak_kecil",
+      "x": 52.8,
+      "y": 242.9,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_629",
+      "type": "rumput_tinggi",
+      "x": 73.5,
+      "y": 48.6,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_630",
+      "type": "semak_kecil",
+      "x": 40.8,
+      "y": -9.8,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_631",
+      "type": "patch_batu_jalan",
+      "x": -205.3,
+      "y": 245.4,
+      "nearestNodeId": "node_17",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_632",
+      "type": "batu_kecil",
+      "x": 10.3,
+      "y": 62.0,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_633",
+      "type": "semak_kecil",
+      "x": -236.0,
+      "y": 22.1,
+      "nearestNodeId": "node_13",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_634",
+      "type": "rumput_tinggi",
+      "x": 164.0,
+      "y": 289.8,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_635",
+      "type": "batu_kecil",
+      "x": -48.8,
+      "y": 247.2,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_636",
+      "type": "batu_kecil",
+      "x": -90.8,
+      "y": 69.6,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_637",
+      "type": "patch_batu_jalan",
+      "x": 124.5,
+      "y": 258.5,
+      "nearestNodeId": "node_09",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_638",
+      "type": "semak_kecil",
+      "x": 141.7,
+      "y": 167.8,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_639",
+      "type": "batu_kecil",
+      "x": 101.9,
+      "y": 89.2,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_640",
+      "type": "semak_bulat",
+      "x": -80.5,
+      "y": 143.5,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_641",
+      "type": "semak_kecil",
+      "x": -51.9,
+      "y": 176.9,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_642",
+      "type": "semak_bulat",
+      "x": -43.6,
+      "y": 79.8,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_643",
+      "type": "semak_kecil",
+      "x": -32.7,
+      "y": 8.6,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_644",
+      "type": "batu_kecil",
+      "x": 45.6,
+      "y": 91.1,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_645",
+      "type": "batu_kecil",
+      "x": -116.3,
+      "y": 181.8,
+      "nearestNodeId": "node_17",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_646",
+      "type": "batu_kecil",
+      "x": 255.0,
+      "y": 173.8,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_647",
+      "type": "batu_kecil",
+      "x": 209.0,
+      "y": 285.5,
+      "nearestNodeId": "node_09",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_648",
+      "type": "rumput_tinggi",
+      "x": 303.8,
+      "y": 287.1,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_649",
+      "type": "batu_kecil",
+      "x": 218.9,
+      "y": 169.8,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_650",
+      "type": "batu_kecil",
+      "x": 485.0,
+      "y": 103.5,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_651",
+      "type": "semak_bulat",
+      "x": 249.0,
+      "y": 75.3,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_652",
+      "type": "semak_bulat",
+      "x": 485.8,
+      "y": 63.1,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_653",
+      "type": "patch_batu_jalan",
+      "x": 512.5,
+      "y": 229.6,
+      "nearestNodeId": "node_16",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_654",
+      "type": "patch_batu_jalan",
+      "x": 272.1,
+      "y": 223.1,
+      "nearestNodeId": "node_16",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_655",
+      "type": "semak_kecil",
+      "x": 526.3,
+      "y": 83.2,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_656",
+      "type": "rumput_tinggi",
+      "x": 567.5,
+      "y": 105.2,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_657",
+      "type": "patch_batu_jalan",
+      "x": 369.0,
+      "y": 115.2,
+      "nearestNodeId": "node_16",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_658",
+      "type": "semak_kecil",
+      "x": 371.3,
+      "y": 81.1,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_659",
+      "type": "semak_kecil",
+      "x": 584.5,
+      "y": 72.7,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_660",
+      "type": "rumput_tinggi",
+      "x": 237.3,
+      "y": 109.7,
+      "nearestNodeId": "node_14",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_661",
+      "type": "rumput_tinggi",
+      "x": 336.5,
+      "y": 232.4,
+      "nearestNodeId": "node_16",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_662",
+      "type": "patch_batu_jalan",
+      "x": 282.4,
+      "y": 150.2,
+      "nearestNodeId": "node_16",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_663",
+      "type": "patch_batu_jalan",
+      "x": 623.8,
+      "y": 92.5,
+      "nearestNodeId": "node_15",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_664",
+      "type": "patch_batu_jalan",
+      "x": 1055.4,
+      "y": 387.0,
+      "nearestNodeId": "node_07",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_665",
+      "type": "semak_kecil",
+      "x": 765.9,
+      "y": 186.9,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_666",
+      "type": "batu_kecil",
+      "x": 987.7,
+      "y": 253.7,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_667",
+      "type": "semak_kecil",
+      "x": 1013.5,
+      "y": 291.9,
+      "nearestNodeId": "node_07",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_668",
+      "type": "semak_kecil",
+      "x": 706.1,
+      "y": 97.8,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_669",
+      "type": "rumput_tinggi",
+      "x": 825.8,
+      "y": 356.5,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_670",
+      "type": "patch_batu_jalan",
+      "x": 789.6,
+      "y": 312.8,
+      "nearestNodeId": "node_08",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_671",
+      "type": "semak_bulat",
+      "x": 825.0,
+      "y": 318.5,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_672",
+      "type": "semak_kecil",
+      "x": 801.9,
+      "y": 241.4,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_673",
+      "type": "patch_batu_jalan",
+      "x": 787.0,
+      "y": 95.3,
+      "nearestNodeId": "node_15",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_674",
+      "type": "rumput_tinggi",
+      "x": 911.7,
+      "y": 90.0,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_675",
+      "type": "semak_bulat",
+      "x": 1002.7,
+      "y": 154.3,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_676",
+      "type": "patch_batu_jalan",
+      "x": 888.9,
+      "y": 307.0,
+      "nearestNodeId": "node_08",
+      "layer": 1,
+      "scale": 0.2,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_677",
+      "type": "batu_kecil",
+      "x": 863.7,
+      "y": 156.4,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_678",
+      "type": "batu_kecil",
+      "x": 855.6,
+      "y": 280.7,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.24,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_679",
+      "type": "semak_bulat",
+      "x": 733.0,
+      "y": 141.8,
+      "nearestNodeId": "node_15",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_680",
+      "type": "rumput_tinggi",
+      "x": 985.3,
+      "y": 397.6,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    },
+    {
+      "id": "scatter_681",
+      "type": "semak_kecil",
+      "x": 748.2,
+      "y": 328.8,
+      "nearestNodeId": "node_08",
+      "layer": 2,
+      "scale": 0.23,
+      "sortOffsetY": 0
+    }
+  ],
+  "penanda_rute": {
+    "startNodeId": "node_01",
+    "targetNodeId": "node_07",
+    "startFlag": {
+      "type": "start_flag",
+      "offsetX": -28,
+      "offsetY": -38,
+      "scale": 0.3,
+      "layer": 3
+    },
+    "targetFlag": {
+      "type": "target_flag",
+      "offsetX": 28,
+      "offsetY": -38,
+      "scale": 0.3,
+      "layer": 3
+    }
+  },
+  "randomization": {
+    "allowRandomStart": true,
+    "allowRandomTarget": true,
+    "minNodeDegree": 2,
+    "minStartTargetDistance": 620,
+    "excludeNodeIds": [],
+    "preferredStartNodes": [
+      "node_01",
+      "node_02",
+      "node_03",
+      "node_04",
+      "node_05"
+    ],
+    "preferredTargetNodes": [
+      "node_14",
+      "node_15",
+      "node_16",
+      "node_17",
+      "node_18"
+    ]
+  },
+  "dayNight": {
+    "enabled": true,
+    "startHour": 12,
+    "finishHour": 20,
+    "startLabel": "Siang",
+    "midLabel": "Sore",
+    "finishLabel": "Malam"
+  },
+  "atlasData": {
+    "menara_benteng": {
+      "x": 93,
+      "y": 1550,
+      "w": 200,
+      "h": 429,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "benteng_utama": {
+      "x": 393,
+      "y": 1587,
+      "w": 540,
+      "h": 391,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "rumah_kayu_1": {
+      "x": 56,
+      "y": 423,
+      "w": 334,
+      "h": 339,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "rumah_kayu_2": {
+      "x": 77,
+      "y": 832,
+      "w": 336,
+      "h": 358,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "rumah_kayu_3": {
+      "x": 939,
+      "y": 883,
+      "w": 336,
+      "h": 308,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "rumah_kayu_4": {
+      "x": 1370,
+      "y": 849,
+      "w": 336,
+      "h": 336,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "toko_kecil": {
+      "x": 477,
+      "y": 389,
+      "w": 334,
+      "h": 387,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "pandai_besi": {
+      "x": 899,
+      "y": 375,
+      "w": 334,
+      "h": 387,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "rumah_orkay": {
+      "x": 508,
+      "y": 848,
+      "w": 336,
+      "h": 343,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "pohon_pinus": {
+      "x": 1033,
+      "y": 1658,
+      "w": 175,
+      "h": 320,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "layer": 2
+    },
+    "pohon_besar": {
+      "x": 1308,
+      "y": 1658,
+      "w": 248,
+      "h": 319,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "layer": 2
+    },
+    "semak_kecil": {
+      "x": 554,
+      "y": 1327,
+      "w": 160,
+      "h": 139,
+      "anchorX": 0.5,
+      "anchorY": 0.76,
+      "layer": 2
+    },
+    "semak_bulat": {
+      "x": 314,
+      "y": 1334,
+      "w": 160,
+      "h": 132,
+      "anchorX": 0.5,
+      "anchorY": 0.76,
+      "layer": 2
+    },
+    "rumput_tinggi": {
+      "x": 1364,
+      "y": 1300,
+      "w": 160,
+      "h": 166,
+      "anchorX": 0.5,
+      "anchorY": 0.76,
+      "layer": 2
+    },
+    "batu_besar": {
+      "x": 794,
+      "y": 1353,
+      "w": 160,
+      "h": 113,
+      "anchorX": 0.5,
+      "anchorY": 0.76,
+      "layer": 2
+    },
+    "batu_kecil": {
+      "x": 74,
+      "y": 1367,
+      "w": 160,
+      "h": 96,
+      "anchorX": 0.5,
+      "anchorY": 0.76,
+      "layer": 2
+    },
+    "patch_batu_jalan": {
+      "x": 1604,
+      "y": 1343,
+      "w": 160,
+      "h": 120,
+      "anchorX": 0.5,
+      "anchorY": 0.76,
+      "layer": 1
+    },
+    "pagar_kayu": {
+      "x": 1034,
+      "y": 1274,
+      "w": 250,
+      "h": 204,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "papan_arah": {
+      "x": 1801,
+      "y": 981,
+      "w": 170,
+      "h": 210,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "lampu_obor": {
+      "x": 1844,
+      "y": 1265,
+      "w": 130,
+      "h": 201,
+      "anchorX": 0.5,
+      "anchorY": 0.88,
+      "layer": 2
+    },
+    "kolam": {
+      "x": 1326,
+      "y": 414,
+      "w": 661,
+      "h": 349,
+      "anchorX": 0.5,
+      "anchorY": 0.52,
+      "layer": 1,
+      "effect": "water"
+    },
+    "start_flag": {
+      "x": 1656,
+      "y": 1760,
+      "w": 100,
+      "h": 217,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "layer": 3
+    },
+    "target_flag": {
+      "x": 1856,
+      "y": 1761,
+      "w": 100,
+      "h": 217,
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "layer": 3
+    },
+    "kereta_kanan_01": {
+      "x": 118,
+      "y": 203,
+      "w": 210,
+      "h": 132,
+      "anchorX": 0.5,
+      "anchorY": 0.965,
+      "layer": 3,
+      "defaultScale": 0.3
+    },
+    "kereta_kanan_02": {
+      "x": 426,
+      "y": 204,
+      "w": 210,
+      "h": 131,
+      "anchorX": 0.5,
+      "anchorY": 0.965,
+      "layer": 3,
+      "defaultScale": 0.3
+    },
+    "kereta_kanan_bawah_01": {
+      "x": 746,
+      "y": 176,
+      "w": 210,
+      "h": 165,
+      "anchorX": 0.5,
+      "anchorY": 0.965,
+      "layer": 3,
+      "defaultScale": 0.3
+    },
+    "kereta_kanan_bawah_02": {
+      "x": 1066,
+      "y": 176,
+      "w": 210,
+      "h": 159,
+      "anchorX": 0.5,
+      "anchorY": 0.965,
+      "layer": 3,
+      "defaultScale": 0.3
+    },
+    "kereta_kanan_atas_01": {
+      "x": 1398,
+      "y": 149,
+      "w": 210,
+      "h": 182,
+      "anchorX": 0.5,
+      "anchorY": 0.965,
+      "layer": 3,
+      "defaultScale": 0.3
+    },
+    "kereta_kanan_atas_02": {
+      "x": 1722,
+      "y": 161,
+      "w": 210,
+      "h": 174,
+      "anchorX": 0.5,
+      "anchorY": 0.965,
+      "layer": 3,
+      "defaultScale": 0.3
+    }
+  },
+  "_validationNote": {
+    "connected": true,
+    "deadEndNodeIds": [],
+    "minDegree": 2,
+    "objectCount": 681,
+    "layoutFocus": "clearance ketat: rumah/benteng/kolam tidak ditempatkan di centerline jalan; rumah dibuat sebagai distrik.",
+    "buildingRoadViolations": [],
+    "buildingOverlapWarnings": []
+  }
+}
