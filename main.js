@@ -1,22 +1,8 @@
 /**
- * ============================================================
- * main.js
- * Medieval Spatial Mapping — WebGL 1.0 Pure / ES6 Modules
- * Entry Point, Asset Loader, Game Loop, dan UI Controller
- * ============================================================
- *
- * File ini menghubungkan engine.js, renderer.js, animation.js,
- * map_grafika.json, dan spritesheet.png.
- *
- * Kontrak modul:
- * - engine.js     : initWebGL(), beginFrame()
- * - renderer.js   : setupTexture(), setupRoadGeometry(), setupSpriteGeometry(), drawRoads(), drawSprites()
- * - animation.js  : createAnimationState(), updateAnimations(), start/pause/toggle, randomize, camera follow
- *
- * Catatan:
- * - Tidak menggunakan Three.js, Babylon.js, gl-matrix, atau library eksternal.
- * - Path asset disesuaikan dengan struktur repo root:
- *   ./map_grafika.json dan ./spritesheet.png
+ * Nama: Dhiya Zarifa Putri Marzuki
+ * NIM: 2401020075
+ * File: main.js
+ * Kontribusi: Entry point aplikasi, pemuatan asset, integrasi modul, render loop, kontrol UI, dan pergantian map.
  */
 
 'use strict';
@@ -33,370 +19,581 @@ import {
   setupSpriteGeometry,
   drawRoads,
   drawSprites,
+  drawLightingOverlay,
 } from './renderer.js';
 
 import {
   createAnimationState,
   updateAnimations,
-  startTrack,
-  pauseTrack,
   toggleTrack,
+  pauseTrack,
   randomizeCarriagePosition,
   randomizeTargetPosition,
-  requestRouteToNode,
   updateCameraFollow,
   breakCameraFollow,
   enableCameraFollow,
+  getDynamicRouteMarkerObjects,
+  validateRoadGraph,
 } from './animation.js';
 
 // ============================================================
-// BAGIAN 2 — KONFIGURASI GLOBAL
+// BAGIAN 2 — KONFIGURASI UTAMA
 // ============================================================
 
 const CANVAS_ID = 'glCanvas';
-
-// Struktur repo saat ini menaruh JSON dan spritesheet di root.
-// Jika nanti dipindahkan ke folder assets/, cukup ubah dua konstanta ini.
-const DATA_URL = './map_grafika.json';
 const SPRITESHEET_URL = './spritesheet.png';
 
-// ID tombol disesuaikan dengan HTML. Semua bersifat opsional:
-// jika ID tidak ada di HTML, aplikasi tetap berjalan.
-const START_PAUSE_BUTTON_ID = 'btnStartPause';
-const RANDOMIZE_MAP_BUTTON_ID = 'btnRandomizeMap';
-const RANDOMIZE_POSITION_BUTTON_ID = 'btnRandomizePosition';
-const RANDOMIZE_TARGET_BUTTON_ID = 'btnRandomizeTarget';
-const FOLLOW_CAMERA_BUTTON_ID = 'btnFollowCamera';
+const MAP_VARIANT_URLS = [
+  './map_variant1.json',
+  './map_variant2.json',
+  './map_variant3.json',
+  './map_variant4.json',
+];
 
-const MAX_DELTA_TIME = 0.1;
+const UI_IDS = {
+  startPause: 'btnStartPause',
+  randomizeMap: 'btnRandomizeMap',
+  randomizePosition: 'btnRandomizePosition',
+  randomizeTarget: 'btnRandomizeTarget',
+  followCamera: 'btnFollowCamera',
+  variantLabel: 'variantLabel',
+  worldTimeLabel: 'worldTimeLabel',
+  routeStatusLabel: 'routeStatusLabel',
+};
+
+const MAX_DELTA_TIME = 0.10;
+const DEFAULT_WORLD_PADDING = 220;
 
 // ============================================================
-// BAGIAN 3 — ASSET LOADING
+// BAGIAN 3 — STATE GLOBAL APLIKASI
+// ============================================================
+
+const appState = {
+  initialized: false,
+  assetsReady: false,
+  isSwitchingMap: false,
+  lastFrameTime: 0,
+  animationFrameId: 0,
+  currentVariantIndex: 0,
+  mapCache: new Map(),
+};
+
+let canvas = null;
+let gl = null;
+let locations = null;
+let cameraState = null;
+
+let spritesheetImage = null;
+let currentMapData = null;
+let simulationState = null;
+
+const rendererState = {
+  texture: null,
+  roads: null,
+  sprites: null,
+  atlasData: {},
+  atlasSize: 2048,
+  simulationTime: 0,
+  dayNightProgress: 0,
+};
+
+// ============================================================
+// BAGIAN 4 — ASSET LOADING
 // ============================================================
 
 async function loadJSON(url) {
-  try {
-    const response = await fetch(url);
+  const response = await fetch(url, { cache: 'no-store' });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status} ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    console.log(`[Asset] JSON berhasil dimuat: ${url}`);
-    return data;
-  } catch (error) {
-    console.error(`[Asset] Gagal memuat JSON "${url}".`, error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(`[main.js] Gagal memuat JSON: ${url} (${response.status} ${response.statusText})`);
   }
+
+  return response.json();
 }
 
 function loadImage(url) {
   return new Promise((resolve, reject) => {
-    const img = new Image();
+    const image = new Image();
 
-    img.onload = () => {
-      console.log(`[Asset] Gambar berhasil dimuat: ${url} (${img.width}x${img.height})`);
-      resolve(img);
-    };
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error(`[main.js] Gagal memuat gambar: ${url}`));
 
-    img.onerror = () => {
-      const err = new Error(`Gagal memuat gambar: ${url}`);
-      console.error(`[Asset] ${err.message}`);
-      reject(err);
-    };
-
-    img.src = url;
+    image.src = url;
   });
 }
 
-async function loadAssets() {
-  const [mapData, spritesheet] = await Promise.all([
-    loadJSON(DATA_URL),
-    loadImage(SPRITESHEET_URL),
-  ]);
+async function loadMapVariant(index) {
+  const normalizedIndex = ((index % MAP_VARIANT_URLS.length) + MAP_VARIANT_URLS.length) % MAP_VARIANT_URLS.length;
+  const url = MAP_VARIANT_URLS[normalizedIndex];
 
-  return { mapData, spritesheet };
+  return loadJSON(url);
+}
+
+function getRoadGraphSignature(mapData) {
+  const nodes = mapData?.roadGraph?.nodes || [];
+  const edges = mapData?.roadGraph?.edges || [];
+  return `${nodes.length}N-${edges.length}E-${nodes.slice(0, 4).map((n) => `${Math.round(n.x)},${Math.round(n.y)}`).join('|')}`;
 }
 
 // ============================================================
-// BAGIAN 4 — STATE UTAMA APLIKASI
+// BAGIAN 5 — MAP / SPRITE DATA UTILITIES
 // ============================================================
 
-let appState = {
-  isRunning: false,
-  lastFrameTime: 0,
-  assetsLoaded: false,
-  debug: false,
-};
+function getStaticObjects(mapData) {
+  const rawObjects = Array.isArray(mapData?.objek_statis)
+    ? mapData.objek_statis
+    : Array.isArray(mapData?.objects)
+      ? mapData.objects
+      : Array.isArray(mapData?.buildings)
+        ? mapData.buildings
+        : Array.isArray(mapData?.sprites)
+          ? mapData.sprites
+          : [];
 
-let rendererState = {};
-let simulationState = null;
-let currentMapData = null;
-
-let gl = null;
-let canvas = null;
-let cameraState = null;
-let locations = null;
-
-// ============================================================
-// BAGIAN 5 — UTILITAS DATA MAP
-// ============================================================
-
-function getRoadData(mapData) {
-  // setupRoadGeometry versi final aman menerima mapData penuh.
-  // Ini penting agar renderer bisa menggambar roadGraph.edges yang bercabang,
-  // bukan hanya rute_jalan linear.
-  return mapData;
+  // Bendera lama tidak boleh menjadi statis permanen karena sekarang marker route dinamis.
+  return rawObjects.filter((obj) => !isStaticRouteMarker(obj));
 }
 
-function getBuildingData(mapData) {
-  return mapData?.objek_statis ?? mapData?.buildings ?? mapData?.objects ?? [];
+function isStaticRouteMarker(obj) {
+  const id = String(obj?.id || '').toLowerCase();
+  const type = String(obj?.type || obj?.tipe || obj?.sprite || obj?.atlasKey || '').toLowerCase();
+
+  return (
+    type === 'start_flag' ||
+    type === 'target_flag' ||
+    type === 'finish_flag' ||
+    id.includes('start_flag') ||
+    id.includes('target_flag') ||
+    id.includes('finish_flag')
+  );
 }
 
-function applyInitialRouteFromMap(mapData) {
-  if (!simulationState || !mapData) return;
+function getRenderableSpriteObjects() {
+  if (!currentMapData) return [];
 
-  const startNodeId = mapData.penanda_rute?.startNodeId;
-  const targetNodeId = mapData.penanda_rute?.targetNodeId;
+  const staticObjects = getStaticObjects(currentMapData);
+  const dynamicMarkers = getDynamicRouteMarkerObjects(simulationState);
 
-  // createAnimationState() sudah memilih node pertama sebagai posisi awal.
-  // Jika penanda_rute.startNodeId ada, sinkronkan posisi awal kereta ke node itu.
-  if (startNodeId && simulationState.graph?.nodes?.has(startNodeId)) {
-    const startNode = simulationState.graph.nodes.get(startNodeId);
-    simulationState.currentNodeId = startNodeId;
-    simulationState.carriage.x = startNode.x;
-    simulationState.carriage.y = startNode.y;
+  return staticObjects.concat(dynamicMarkers);
+}
+
+function syncSpriteObjects() {
+  if (!rendererState.sprites) return;
+  rendererState.sprites.objects = getRenderableSpriteObjects();
+}
+
+function computeWorldBounds(mapData) {
+  if (mapData?.worldBounds) {
+    return {
+      minX: Number.isFinite(mapData.worldBounds.minX) ? mapData.worldBounds.minX : -1600,
+      maxX: Number.isFinite(mapData.worldBounds.maxX) ? mapData.worldBounds.maxX : 1600,
+      minY: Number.isFinite(mapData.worldBounds.minY) ? mapData.worldBounds.minY : -900,
+      maxY: Number.isFinite(mapData.worldBounds.maxY) ? mapData.worldBounds.maxY : 900,
+      padding: Number.isFinite(mapData.worldBounds.padding) ? mapData.worldBounds.padding : DEFAULT_WORLD_PADDING,
+    };
   }
 
-  // Target awal diambil dari JSON, bukan random, supaya demo lebih terkontrol.
-  if (targetNodeId && simulationState.graph?.nodes?.has(targetNodeId)) {
-    requestRouteToNode(simulationState, targetNodeId);
-  } else {
-    randomizeTargetPosition(simulationState);
+  const points = [];
+
+  for (const node of mapData?.roadGraph?.nodes || []) {
+    if (Number.isFinite(node.x) && Number.isFinite(node.y)) points.push({ x: node.x, y: node.y });
   }
+
+  for (const obj of getStaticObjects(mapData)) {
+    if (Number.isFinite(obj.x) && Number.isFinite(obj.y)) points.push({ x: obj.x, y: obj.y });
+  }
+
+  if (points.length === 0) {
+    return { minX: -1600, maxX: 1600, minY: -900, maxY: 900, padding: DEFAULT_WORLD_PADDING };
+  }
+
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  for (const point of points) {
+    minX = Math.min(minX, point.x);
+    maxX = Math.max(maxX, point.x);
+    minY = Math.min(minY, point.y);
+    maxY = Math.max(maxY, point.y);
+  }
+
+  return { minX, maxX, minY, maxY, padding: DEFAULT_WORLD_PADDING };
+}
+
+function resetCameraFromMapHint(mapData) {
+  if (!cameraState) return;
+
+  const hint = mapData?.metadata?.camera?.viewportHint || {};
+
+  cameraState.panX = Number.isFinite(hint.x) ? hint.x : 0;
+  cameraState.panY = Number.isFinite(hint.y) ? hint.y : 0;
+  cameraState.zoom = Number.isFinite(hint.zoom) ? hint.zoom : 0.85;
+  cameraState.isDirty = true;
+}
+
+// ============================================================
+// BAGIAN 6 — MAP SETUP DAN RESOURCE UPDATE
+// ============================================================
+
+async function setupMapVariant(index, options = {}) {
+  if (appState.isSwitchingMap) return false;
+
+  appState.isSwitchingMap = true;
+  setControlsEnabled(false);
+  setText(UI_IDS.routeStatusLabel, 'Memuat map...');
+
+  try {
+    const mapData = await loadMapVariant(index);
+    const validation = validateRoadGraph(mapData);
+
+    if (!validation.isStrictlyValid) {
+      console.warn('[main.js] roadGraph map variant belum strict valid. Map tetap dimuat, tetapi map_variant final harus diperbaiki.', validation);
+    }
+
+    disposeMapRendererResources();
+
+    currentMapData = mapData;
+    appState.currentVariantIndex = index;
+
+    rendererState.atlasData = currentMapData.atlasData || {};
+    rendererState.atlasSize = currentMapData.atlasSize || 2048;
+    rendererState.roads = setupRoadGeometry(gl, locations, currentMapData);
+
+    simulationState = createAnimationState(currentMapData);
+    rendererState.sprites = setupSpriteGeometry(gl, locations, getRenderableSpriteObjects());
+
+    if (options.resetCamera !== false) {
+      resetCameraFromMapHint(currentMapData);
+    }
+
+    syncSpriteObjects();
+    updateUI();
+
+    console.log(`[main.js] Map variant ${getVariantLabel()} siap. RoadGraph: ${getRoadGraphSignature(currentMapData)}`, validation);
+    return true;
+  } catch (error) {
+    console.error(error);
+    setText(UI_IDS.routeStatusLabel, 'Gagal memuat map');
+    return false;
+  } finally {
+    appState.isSwitchingMap = false;
+    setControlsEnabled(true);
+    syncStartPauseButton();
+  }
+}
+
+function disposeMapRendererResources() {
+  if (!gl) return;
+
+  const roadRenderer = rendererState.roads?.rendererInstance;
+  if (roadRenderer) {
+    if (roadRenderer.vbo) gl.deleteBuffer(roadRenderer.vbo);
+    if (roadRenderer.program) gl.deleteProgram(roadRenderer.program);
+  }
+
+  const spriteRenderer = rendererState.sprites?.rendererInstance;
+  if (spriteRenderer) {
+    if (spriteRenderer.vbo) gl.deleteBuffer(spriteRenderer.vbo);
+    if (spriteRenderer.program) gl.deleteProgram(spriteRenderer.program);
+  }
+
+  rendererState.roads = null;
+  rendererState.sprites = null;
+}
+
+function pickRandomMapIndex() {
+  if (MAP_VARIANT_URLS.length <= 1) return 0;
+
+  let nextIndex = appState.currentVariantIndex;
+  let guard = 0;
+
+  while (nextIndex === appState.currentVariantIndex && guard < 12) {
+    nextIndex = Math.floor(Math.random() * MAP_VARIANT_URLS.length);
+    guard += 1;
+  }
+
+  return nextIndex;
+}
+
+// ============================================================
+// BAGIAN 7 — UI EVENTS
+// ============================================================
+
+function setupUIEvents() {
+  const btnStartPause = document.getElementById(UI_IDS.startPause);
+  const btnRandomizeMap = document.getElementById(UI_IDS.randomizeMap);
+  const btnRandomizePosition = document.getElementById(UI_IDS.randomizePosition);
+  const btnRandomizeTarget = document.getElementById(UI_IDS.randomizeTarget);
+  const btnFollowCamera = document.getElementById(UI_IDS.followCamera);
+
+  if (btnStartPause) {
+    btnStartPause.addEventListener('click', () => {
+      if (!simulationState) return;
+      toggleTrack(simulationState);
+      syncSpriteObjects();
+      updateUI();
+    });
+  }
+
+  if (btnRandomizeMap) {
+    btnRandomizeMap.addEventListener('click', async () => {
+      if (appState.isSwitchingMap) return;
+      pauseTrack(simulationState);
+      await setupMapVariant(pickRandomMapIndex(), { resetCamera: true });
+    });
+  }
+
+  if (btnRandomizePosition) {
+    btnRandomizePosition.addEventListener('click', () => {
+      if (!simulationState) return;
+      randomizeCarriagePosition(simulationState);
+      syncSpriteObjects();
+      updateUI();
+    });
+  }
+
+  if (btnRandomizeTarget) {
+    btnRandomizeTarget.addEventListener('click', () => {
+      if (!simulationState) return;
+      randomizeTargetPosition(simulationState);
+      syncSpriteObjects();
+      updateUI();
+    });
+  }
+
+  if (btnFollowCamera) {
+    btnFollowCamera.addEventListener('click', () => {
+      if (!simulationState) return;
+      enableCameraFollow(simulationState);
+      updateUI();
+    });
+  }
+}
+
+function setupManualCameraOverrideListeners() {
+  if (!canvas) return;
+
+  canvas.addEventListener('pointerdown', () => {
+    breakCameraFollow(simulationState);
+    updateUI();
+  });
+
+  canvas.addEventListener('wheel', () => {
+    breakCameraFollow(simulationState);
+    updateUI();
+  }, { passive: true });
+}
+
+function setControlsEnabled(enabled) {
+  for (const id of [
+    UI_IDS.startPause,
+    UI_IDS.randomizeMap,
+    UI_IDS.randomizePosition,
+    UI_IDS.randomizeTarget,
+    UI_IDS.followCamera,
+  ]) {
+    const element = document.getElementById(id);
+    if (element) element.disabled = !enabled;
+  }
+}
+
+function setText(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = value;
+}
+
+function getVariantLabel() {
+  const id = currentMapData?.metadata?.variantId;
+  return id ? `Variant ${id}` : `Variant ${appState.currentVariantIndex + 1}`;
+}
+
+function updateUI() {
+  if (!simulationState || !currentMapData) return;
+
+  setText(UI_IDS.variantLabel, getVariantLabel());
+
+  const dayNight = simulationState.dayNight;
+  if (dayNight) {
+    setText(UI_IDS.worldTimeLabel, `${dayNight.label} — ${dayNight.timestamp}`);
+  }
+
+  const stats = simulationState.pathfindingStats || {};
+  const routeText = stats.lastStatus || (simulationState.isRunning ? 'Berjalan' : 'Siaga');
+  setText(UI_IDS.routeStatusLabel, routeText);
+
+  syncStartPauseButton();
+  syncFollowButton();
 }
 
 function syncStartPauseButton() {
-  const btn = document.getElementById(START_PAUSE_BUTTON_ID);
-  if (!btn) return;
+  const button = document.getElementById(UI_IDS.startPause);
+  if (!button) return;
 
-  const running = Boolean(simulationState?.isRunning);
-  btn.textContent = running ? 'Pause' : 'Start';
+  button.textContent = simulationState?.isRunning ? 'Pause' : 'Start';
+}
+
+function syncFollowButton() {
+  const button = document.getElementById(UI_IDS.followCamera);
+  if (!button || !simulationState?.cameraFollow) return;
+
+  button.textContent = simulationState.cameraFollow.enabled ? 'Follow Aktif' : 'Follow Kamera';
 }
 
 // ============================================================
-// BAGIAN 6 — RENDER LOOP
+// BAGIAN 8 — DAY / NIGHT CLEAR COLOR
 // ============================================================
 
-function renderLoop(time) {
-  let deltaTime = (time - appState.lastFrameTime) / 1000;
+function applyDayNightClearColor() {
 
-  if (!Number.isFinite(deltaTime) || deltaTime < 0) {
-    deltaTime = 0;
+  gl.clearColor(0.070, 0.205, 0.090, 1.0);
+}
+
+function mixColor(a, b, t) {
+  const k = Math.max(0, Math.min(1, t));
+  return [
+    a[0] + (b[0] - a[0]) * k,
+    a[1] + (b[1] - a[1]) * k,
+    a[2] + (b[2] - a[2]) * k,
+    a[3] + (b[3] - a[3]) * k,
+  ];
+}
+
+// ============================================================
+// BAGIAN 9 — CAMERA BOUNDS
+// ============================================================
+
+function clampCameraToWorldBounds() {
+  if (!cameraState || !currentMapData) return;
+
+  const bounds = computeWorldBounds(currentMapData);
+  const padding = bounds.padding || DEFAULT_WORLD_PADDING;
+
+  const minX = bounds.minX - padding;
+  const maxX = bounds.maxX + padding;
+  const minY = bounds.minY - padding;
+  const maxY = bounds.maxY + padding;
+
+  const zoom = Math.max(0.01, Number(cameraState.zoom) || 1);
+  const viewW = (canvas?.width || cameraState.canvasWidth || 1) / zoom;
+  const viewH = (canvas?.height || cameraState.canvasHeight || 1) / zoom;
+
+  const worldW = maxX - minX;
+  const worldH = maxY - minY;
+
+  let targetPanX = cameraState.panX;
+  let targetPanY = cameraState.panY;
+
+  if (viewW >= worldW) {
+    const centerX = (minX + maxX) * 0.5;
+    targetPanX = viewW * 0.5 - centerX;
+  } else {
+    const minPanX = viewW - maxX;
+    const maxPanX = -minX;
+    targetPanX = clamp(targetPanX, minPanX, maxPanX);
   }
 
-  if (deltaTime > MAX_DELTA_TIME) {
-    deltaTime = MAX_DELTA_TIME;
+  if (viewH >= worldH) {
+    const centerY = (minY + maxY) * 0.5;
+    targetPanY = viewH * 0.5 - centerY;
+  } else {
+    const minPanY = viewH - maxY;
+    const maxPanY = -minY;
+    targetPanY = clamp(targetPanY, minPanY, maxPanY);
   }
 
-  appState.lastFrameTime = time;
-
-  // Update simulasi dilakukan sebelum beginFrame agar camera follow dapat
-  // memperbarui cameraState sebelum matrix kamera dikirim ke shader.
-  if (simulationState) {
-    updateAnimations(simulationState, deltaTime);
-    updateCameraFollow(simulationState, cameraState, deltaTime);
-    appState.isRunning = Boolean(simulationState.isRunning);
+  if (targetPanX !== cameraState.panX || targetPanY !== cameraState.panY) {
+    cameraState.panX = targetPanX;
+    cameraState.panY = targetPanY;
+    cameraState.isDirty = true;
   }
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+// ============================================================
+// BAGIAN 10 — GAME LOOP
+// ============================================================
+
+function runFrame(timestampMs) {
+  appState.animationFrameId = requestAnimationFrame(runFrame);
+
+  if (!appState.assetsReady || !gl || !canvas || !cameraState || !simulationState) return;
+
+  const now = timestampMs * 0.001;
+  const deltaTime = appState.lastFrameTime > 0
+    ? Math.min(MAX_DELTA_TIME, now - appState.lastFrameTime)
+    : 0;
+
+  appState.lastFrameTime = now;
+
+  updateAnimations(simulationState, deltaTime);
+  updateCameraFollow(simulationState, cameraState, deltaTime);
+  clampCameraToWorldBounds();
+
+  rendererState.simulationTime = simulationState.time || 0;
+  rendererState.dayNightProgress = simulationState.dayNight?.progress || 0;
+
+  syncSpriteObjects();
+  applyDayNightClearColor(rendererState.dayNightProgress);
 
   beginFrame(gl, cameraState, locations, canvas.width, canvas.height);
 
   drawRoads(gl, locations, rendererState, cameraState);
   drawSprites(gl, locations, rendererState, simulationState, cameraState);
+  drawLightingOverlay(gl, locations, rendererState);
 
-  requestAnimationFrame(renderLoop);
+  updateUI();
 }
 
 // ============================================================
-// BAGIAN 7 — UI LISTENERS
+// BAGIAN 11 — BOOTSTRAP
 // ============================================================
 
-function setupUIListeners() {
-  const btnStartPause = document.getElementById(START_PAUSE_BUTTON_ID);
-  if (btnStartPause) {
-    btnStartPause.addEventListener('click', () => {
-      if (!simulationState) return;
-      toggleTrack(simulationState);
-      appState.isRunning = Boolean(simulationState.isRunning);
-      syncStartPauseButton();
-      console.log(`[UI] Simulasi ${simulationState.isRunning ? 'dimulai' : 'dijeda'}.`);
-    });
-  } else {
-    console.warn(`[UI] Tombol "${START_PAUSE_BUTTON_ID}" tidak ditemukan. Fitur Start/Pause via UI dilewati.`);
-  }
+async function bootstrap() {
+  try {
+    setControlsEnabled(false);
+    setText(UI_IDS.routeStatusLabel, 'Memulai WebGL...');
 
-  const btnRandomizeMap = document.getElementById(RANDOMIZE_MAP_BUTTON_ID);
-  if (btnRandomizeMap) {
-    btnRandomizeMap.addEventListener('click', () => {
-      // Fitur acak map prosedural penuh belum dibuat di main.js.
-      // Untuk demo aman, tombol ini tidak membangun map baru secara palsu.
-      // Randomisasi map sebaiknya dibuat sebagai modul terpisah agar buffer lama
-      // dapat dibersihkan dan mapGraph tetap valid.
-      console.warn('[UI] Acak Map belum diimplementasikan. Gunakan Acak Posisi/Tujuan untuk demo pathfinding.');
-    });
-  }
+    const engine = initWebGL(CANVAS_ID);
+    if (!engine) throw new Error('[main.js] initWebGL gagal.');
 
-  const btnRandomizePosition = document.getElementById(RANDOMIZE_POSITION_BUTTON_ID);
-  if (btnRandomizePosition) {
-    btnRandomizePosition.addEventListener('click', () => {
-      if (!simulationState) return;
-      randomizeCarriagePosition(simulationState);
-      startTrack(simulationState);
-      appState.isRunning = true;
-      syncStartPauseButton();
-    });
-  }
+    canvas = engine.canvas;
+    gl = engine.gl;
+    locations = engine.locations;
+    cameraState = engine.cameraState;
 
-  const btnRandomizeTarget = document.getElementById(RANDOMIZE_TARGET_BUTTON_ID);
-  if (btnRandomizeTarget) {
-    btnRandomizeTarget.addEventListener('click', () => {
-      if (!simulationState) return;
-      randomizeTargetPosition(simulationState);
-      startTrack(simulationState);
-      appState.isRunning = true;
-      syncStartPauseButton();
-    });
-  }
+    setupUIEvents();
+    setupManualCameraOverrideListeners();
 
-  const btnFollowCamera = document.getElementById(FOLLOW_CAMERA_BUTTON_ID);
-  if (btnFollowCamera) {
-    btnFollowCamera.addEventListener('click', () => {
-      if (!simulationState) return;
-      enableCameraFollow(simulationState);
-      console.log('[UI] Auto-follow camera diaktifkan kembali.');
-    });
-  }
+    setText(UI_IDS.routeStatusLabel, 'Memuat spritesheet...');
+    spritesheetImage = await loadImage(SPRITESHEET_URL);
+    rendererState.texture = setupTexture(gl, locations, spritesheetImage);
 
-  // Break auto-follow ketika user mengambil kontrol manual.
-  // Event utama engine.js tetap boleh berjalan; listener ini hanya mengubah flag animasi.
-  if (canvas) {
-    canvas.addEventListener('mousedown', () => {
-      if (simulationState) breakCameraFollow(simulationState);
-    });
+    setText(UI_IDS.routeStatusLabel, 'Memuat map...');
+    const ok = await setupMapVariant(0, { resetCamera: true });
+    if (!ok) throw new Error('[main.js] Map awal gagal dimuat.');
 
-    canvas.addEventListener('wheel', () => {
-      if (simulationState) breakCameraFollow(simulationState);
-    }, { passive: true });
+    appState.assetsReady = true;
+    appState.initialized = true;
+    setControlsEnabled(true);
+    updateUI();
+
+    appState.animationFrameId = requestAnimationFrame(runFrame);
+    console.log('[main.js] Aplikasi siap.');
+  } catch (error) {
+    console.error(error);
+    setControlsEnabled(true);
+    setText(UI_IDS.routeStatusLabel, 'Error saat inisialisasi');
   }
 }
 
-// ============================================================
-// BAGIAN 8 — BOOTSTRAP APLIKASI
-// ============================================================
+window.addEventListener('DOMContentLoaded', bootstrap);
 
-async function runApp() {
-  console.log('╔══════════════════════════════════════════════════╗');
-  console.log('║ Medieval Spatial Mapping — WebGL 1.0 Pure       ║');
-  console.log('╚══════════════════════════════════════════════════╝');
-
-  let mapData;
-  let spritesheet;
-
-  try {
-    const assets = await loadAssets();
-    mapData = assets.mapData;
-    spritesheet = assets.spritesheet;
-    currentMapData = mapData;
-    appState.assetsLoaded = true;
-  } catch (error) {
-    console.error('[App] FATAL: Asset gagal dimuat. Aplikasi dihentikan.', error);
-    return;
-  }
-
-  let engineData;
-  try {
-    engineData = initWebGL(CANVAS_ID);
-
-    if (!engineData || !engineData.gl || !engineData.canvas) {
-      throw new Error('initWebGL() harus mengembalikan minimal { gl, canvas, cameraState, locations }.');
-    }
-  } catch (error) {
-    console.error('[App] FATAL: Gagal inisialisasi WebGL.', error);
-    return;
-  }
-
-  gl = engineData.gl;
-  canvas = engineData.canvas;
-  cameraState = engineData.cameraState;
-  locations = engineData.locations;
-
-  if (!cameraState) {
-    console.warn('[App] cameraState tidak tersedia dari engine.js. Renderer membutuhkan viewProjectionMatrix.');
-  }
-
-  let textureResult;
-  let roadGeometryResult;
-  let spriteGeometryResult;
-
-  try {
-    textureResult = setupTexture(gl, locations, spritesheet);
-
-    // Road renderer menerima mapData penuh agar dapat memakai roadGraph.edges.
-    roadGeometryResult = setupRoadGeometry(gl, locations, getRoadData(mapData));
-
-    // Sprite renderer hanya butuh objek statis.
-    spriteGeometryResult = setupSpriteGeometry(gl, locations, getBuildingData(mapData));
-  } catch (error) {
-    console.error('[App] FATAL: Gagal setup renderer.', error);
-    return;
-  }
-
-  rendererState = {
-    texture: textureResult,
-    roads: roadGeometryResult,
-    sprites: spriteGeometryResult,
-    atlasData: mapData.atlasData ?? {},
-    atlasSize: mapData.atlasSize ?? spritesheet.width ?? 2048,
-  };
-
-  try {
-    simulationState = createAnimationState(mapData);
-
-    // Salin data atlas ke simulationState agar drawSprites bisa membacanya.
-    simulationState.atlasData = mapData.atlasData ?? {};
-    simulationState.atlasSize = mapData.atlasSize ?? spritesheet.width ?? 2048;
-
-    applyInitialRouteFromMap(mapData);
-    startTrack(simulationState);
-    appState.isRunning = true;
-  } catch (error) {
-    console.error('[App] FATAL: Gagal inisialisasi animation.js.', error);
-    return;
-  }
-
-  setupUIListeners();
-  syncStartPauseButton();
-
-  appState.lastFrameTime = performance.now();
-
-  if (appState.debug) {
-    console.log('[Debug] currentMapData:', currentMapData);
-    console.log('[Debug] rendererState:', rendererState);
-    console.log('[Debug] simulationState:', simulationState);
-    console.log('[Debug] cameraState:', cameraState);
-  }
-
-  console.log('[App] Inisialisasi selesai. Render loop dimulai.');
-  requestAnimationFrame(renderLoop);
-}
-
-// ============================================================
-// BAGIAN 9 — ENTRY POINT
-// ============================================================
-
-document.addEventListener('DOMContentLoaded', () => {
-  runApp().catch((error) => {
-    console.error('[App] FATAL: Error tidak tertangkap saat runApp().', error);
-  });
+window.addEventListener('beforeunload', () => {
+  if (appState.animationFrameId) cancelAnimationFrame(appState.animationFrameId);
+  disposeMapRendererResources();
 });
