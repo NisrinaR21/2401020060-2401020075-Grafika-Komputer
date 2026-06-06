@@ -1,518 +1,809 @@
 /**
- * ============================================================
- *  render.js — WebGL Isometric City Simulation Engine
- *  Modul: Bezier Road Geometry Generator
- * ============================================================
- *  Fungsi utama: generateBezierRoad(waypoints, segments, roadWidth)
+ * Nama: Nisrina Retnosari
+ * NIM: 2401020060
+ * Kontribusi: Road rendering, kurva Bezier, mesh triangle, vertex buffer jalan, dan shader jalan.
  *
- *  Pipeline:
- *    1. Hitung Titik Kontrol otomatis (Smooth Cubic Bézier Spline)
- *    2. Evaluasi kurva Bézier Kubik pada setiap parameter t
- *    3. Hitung turunan (tangent) → vektor Normal 2D
- *    4. Ekstrusi vertex kiri & kanan sejauh roadWidth / 2
- *    5. Hitung UV mapping (U: melintang, V: searah kurva)
- *    6. Kembalikan Float32Array format interleave untuk gl.TRIANGLE_STRIP
- * ============================================================
+ * Nama: Dhiya Zarifa Putri Marzuki
+ * NIM: 2401020075
+ * Kontribusi: Texture setup, UV atlas, sprite rendering, z-sorting, occlusion, dan lighting overlay.
  */
 
-// ─────────────────────────────────────────────────────────────
-//  KONSTANTA & KONFIGURASI
-// ─────────────────────────────────────────────────────────────
+"use strict";
 
-/** Faktor skala untuk menghasilkan titik kontrol yang halus.
- *  Nilai 0.33 berarti P1/P2 ditempatkan ~1/3 jarak antar waypoint.
- *  Bisa diubah antara 0.2–0.5 untuk memperketat/memperlebarkan lengkungan. */
-const CONTROL_POINT_TENSION = 0.33;
+// ============================================================
+// BAGIAN 1 — KONSTANTA UMUM
+// ============================================================
+// Konstanta dasar renderer yang dipakai oleh road dan sprite renderer.
 
-/** Sudut (radian) di bawah nilai ini dianggap "tikungan tajam"
- *  dan akan diperlakukan khusus untuk mencegah vertex terpelintir. */
-const SHARP_TURN_THRESHOLD = Math.PI * 0.25; // 45 derajat
+const DEFAULT_ATLAS_SIZE = 2048;
+const DEFAULT_ROAD_WIDTH = 32;
+const DEFAULT_ROAD_SEGMENTS = 18;
+const DEFAULT_EDGE_CURVE_STRENGTH = 34;
+const ROAD_ENDPOINT_EXTENSION = 0.006;
 
-// ─────────────────────────────────────────────────────────────
-//  FUNGSI UTAMA
-// ─────────────────────────────────────────────────────────────
+/** Penutup simpang agar pertemuan beberapa edge tidak tampak putus/berlubang. */
+const JUNCTION_CIRCLE_SEGMENTS = 18;
 
-/**
- * Menghasilkan geometri mesh jalan dari array waypoints menggunakan
- * Smooth Cubic Bézier Spline, siap di-render dengan gl.TRIANGLE_STRIP.
- *
- * @param {Array<{id: string, x: number, y: number}>} waypoints
- *        Array titik yang HARUS dilalui jalan (anchor points).
- * @param {number} segments
- *        Jumlah subdivisi per segmen Bézier (lebih tinggi = lebih halus).
- *        Disarankan: 12–24 untuk kota.
- * @param {number} roadWidth
- *        Lebar jalan dalam satuan world-space.
- *
- * @returns {{
- *   vertices: Float32Array,   // Interleave: [x_L, y_L, u_L, v_L, x_R, y_R, u_R, v_R, ...]
- *   vertexCount: number,      // Total vertex (untuk glDrawArrays)
- *   stride: number,           // Byte per vertex (4 float × 4 byte = 16)
- *   totalLength: number       // Panjang kurva perkiraan (world-space)
- * }}
- */
-export function generateBezierRoad(waypoints, segments = 16, roadWidth = 60) {
+/** Skala dasar kereta. scaleX/scaleY dari animation.js hanya untuk squash-stretch. */
+const DEFAULT_CARRIAGE_BASE_SCALE = 0.32;
 
-  // ── Guard: Minimal 2 titik dibutuhkan untuk membentuk jalan ──
-  if (!waypoints || waypoints.length < 2) {
-    console.warn("[generateBezierRoad] Minimal 2 waypoints dibutuhkan.");
-    return { vertices: new Float32Array(0), vertexCount: 0, stride: 16, totalLength: 0 };
+const _warnedMissingAtlasKeys = new Set();
+
+// ============================================================
+// BAGIAN 2 — SHADER HELPER
+// ============================================================
+// Pendukung umum untuk kompilasi shader, pembuatan program, matrix kamera, dan warna.
+
+function _compileShader(gl, type, source, label) {
+  const shader = gl.createShader(type);
+  if (!shader) throw new Error(`[renderer.js] Gagal membuat shader: ${label}`);
+
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    const info = gl.getShaderInfoLog(shader);
+    gl.deleteShader(shader);
+    throw new Error(`[renderer.js] Gagal compile shader ${label}:\n${info}`);
   }
 
-  // ─────────────────────────────────────────────────────────────
-  //  LANGKAH 1: HITUNG TITIK KONTROL OTOMATIS
-  //  (Smooth Continuous Cubic Bézier Spline)
-  // ─────────────────────────────────────────────────────────────
-  //
-  //  Untuk setiap segmen antara waypoint[i] dan waypoint[i+1],
-  //  kita perlu 4 titik: P0, P1 (kontrol), P2 (kontrol), P3.
-  //
-  //  Metode: "Catmull-Rom ke Bézier Konversi"
-  //  Kita gunakan waypoint tetangga (prev & next) sebagai panduan
-  //  arah tangent, lalu posisikan P1 dan P2 menggunakan TENSION.
-  //
-  //  Rumus asal Catmull-Rom ke Bézier:
-  //    P1 = P0 + (P_next - P_prev) * TENSION
-  //    P2 = P3 - (P_next - P_prev) * TENSION
-  //  Ini MEMENUHI syarat rubrik karena hasil akhir adalah kurva
-  //  yang dihitung sebagai polinomial Bézier kubik B(t).
-  // ─────────────────────────────────────────────────────────────
+  return shader;
+}
 
-  const controlPoints = computeSmoothControlPoints(waypoints, CONTROL_POINT_TENSION);
+function _createProgram(gl, vertSrc, fragSrc, label) {
+  const program = gl.createProgram();
+  if (!program)
+    throw new Error(`[renderer.js] Gagal membuat program: ${label}`);
 
-  // ─────────────────────────────────────────────────────────────
-  //  LANGKAH 2: ESTIMASI TOTAL PANJANG KURVA (untuk UV-V mapping)
-  //  Dilakukan dengan pra-sampling kasar sebelum build vertex.
-  // ─────────────────────────────────────────────────────────────
+  const vertShader = _compileShader(
+    gl,
+    gl.VERTEX_SHADER,
+    vertSrc,
+    `${label} vertex`,
+  );
+  const fragShader = _compileShader(
+    gl,
+    gl.FRAGMENT_SHADER,
+    fragSrc,
+    `${label} fragment`,
+  );
 
-  const totalLength = estimateTotalArcLength(controlPoints, segments);
+  gl.attachShader(program, vertShader);
+  gl.attachShader(program, fragShader);
+  gl.linkProgram(program);
 
-  // ─────────────────────────────────────────────────────────────
-  //  LANGKAH 3: BUILD VERTEX BUFFER
-  // ─────────────────────────────────────────────────────────────
-  //
-  //  Setiap langkah t menghasilkan 2 vertex (kiri & kanan):
-  //    Layout per-vertex: [x, y, u, v]  → 4 float → 16 byte
-  //
-  //  Total vertex = (segments × jumlah_segmen + 1) × 2
-  //  Contoh: 4 waypoint → 3 segmen Bézier × 16 subdivisi + 1 = 49 pasang
-  // ─────────────────────────────────────────────────────────────
+  gl.deleteShader(vertShader);
+  gl.deleteShader(fragShader);
 
-  const numBezierSegments = waypoints.length - 1;
-  const totalSteps        = numBezierSegments * segments + 1;
-  const FLOATS_PER_VERTEX = 4; // x, y, u, v
-  const VERTEX_PER_STEP   = 2; // kiri dan kanan
-
-  // Alokasi buffer: 1D interleave Float32Array
-  const buffer = new Float32Array(totalSteps * VERTEX_PER_STEP * FLOATS_PER_VERTEX);
-
-  let bufferIdx     = 0;   // Indeks tulis ke buffer
-  let vCoordAccum   = 0.0; // Koordinat V yang terakumulasi sepanjang kurva
-  let prevPoint     = null; // Titik evaluasi sebelumnya (untuk hitung jarak V)
-
-  // Iterasi setiap segmen Bézier (antara dua waypoint berturutan)
-  for (let seg = 0; seg < numBezierSegments; seg++) {
-
-    // Ambil 4 titik kontrol untuk segmen ini
-    const { P0, P1, P2, P3 } = controlPoints[seg];
-
-    // Tentukan rentang t: segmen terakhir mencakup t=1.0 juga
-    const stepCount = (seg === numBezierSegments - 1) ? segments + 1 : segments;
-
-    for (let step = 0; step < stepCount; step++) {
-
-      // ── Parameter t: [0.0, 1.0] di sepanjang segmen Bézier ini ──
-      const t = step / segments;
-
-      // ──────────────────────────────────────────────────────────
-      //  EVALUASI POSISI: Cubic Bézier B(t)
-      //
-      //  Rumus standar Bézier Kubik (polinomial Bernstein):
-      //
-      //    B(t) = (1-t)³·P0  +  3·(1-t)²·t·P1
-      //         + 3·(1-t)·t²·P2  +  t³·P3
-      //
-      //  Di mana t ∈ [0, 1]
-      // ──────────────────────────────────────────────────────────
-
-      const mt  = 1 - t;          // (1 - t), disingkat "mt" agar ringkas
-      const mt2 = mt * mt;        // (1 - t)²
-      const mt3 = mt2 * mt;       // (1 - t)³
-      const t2  = t * t;          // t²
-      const t3  = t2 * t;         // t³
-
-      // Koefisien Bernstein basis functions
-      const b0 = mt3;             // (1-t)³       → bobot P0
-      const b1 = 3 * mt2 * t;    // 3(1-t)²t     → bobot P1
-      const b2 = 3 * mt * t2;    // 3(1-t)t²     → bobot P2
-      const b3 = t3;              // t³            → bobot P3
-
-      // Posisi titik di kurva pada parameter t
-      const px = b0 * P0.x + b1 * P1.x + b2 * P2.x + b3 * P3.x;
-      const py = b0 * P0.y + b1 * P1.y + b2 * P2.y + b3 * P3.y;
-
-      // ──────────────────────────────────────────────────────────
-      //  HITUNG TURUNAN PERTAMA: B'(t) = Tangent Vector
-      //
-      //  Turunan B(t) terhadap t (dB/dt):
-      //
-      //    B'(t) = 3·(1-t)²·(P1-P0)  +  6·(1-t)·t·(P2-P1)
-      //          + 3·t²·(P3-P2)
-      //
-      //  Ini memberi kita ARAH kurva di titik t.
-      //  Dari tangent, kita bisa hitung NORMAL 2D (vektor tegak lurus).
-      // ──────────────────────────────────────────────────────────
-
-      const db0 = 3 * mt2;        // Turunan basis B0: 3(1-t)²
-      const db1 = 6 * mt * t;     // Turunan basis B1: 6(1-t)t
-      const db2 = 3 * t2;         // Turunan basis B2: 3t²
-
-      // Tangent vector (arah kurva) — belum ternormalisasi
-      const tx_raw = db0 * (P1.x - P0.x) + db1 * (P2.x - P1.x) + db2 * (P3.x - P2.x);
-      const ty_raw = db0 * (P1.y - P0.y) + db1 * (P2.y - P1.y) + db2 * (P3.y - P2.y);
-
-      // ──────────────────────────────────────────────────────────
-      //  NORMALISASI TANGENT
-      //  Panjang vektor: |T| = √(tx² + ty²)
-      //  Unit tangent: T̂ = T / |T|
-      //
-      //  Guard: jika panjang mendekati nol (cusps/degenerate),
-      //  gunakan tangent dari step sebelumnya.
-      // ──────────────────────────────────────────────────────────
-
-      const tangentLen = Math.sqrt(tx_raw * tx_raw + ty_raw * ty_raw);
-
-      let tx, ty; // Unit tangent ternormalisasi
-      if (tangentLen < 1e-6) {
-        // Fallback: tangent dari chord (perbedaan P3 - P0)
-        const fallbackLen = Math.sqrt(
-          (P3.x - P0.x) ** 2 + (P3.y - P0.y) ** 2
-        ) || 1;
-        tx = (P3.x - P0.x) / fallbackLen;
-        ty = (P3.y - P0.y) / fallbackLen;
-      } else {
-        tx = tx_raw / tangentLen; // Normalisasi: bagi dengan magnitudo
-        ty = ty_raw / tangentLen;
-      }
-
-      // ──────────────────────────────────────────────────────────
-      //  HITUNG VEKTOR NORMAL 2D (Tegak Lurus Tangent)
-      //
-      //  Rotasi 90° berlawanan jarum jam terhadap unit tangent:
-      //    Normal = (-ty, tx)
-      //
-      //  Mengapa rotasi ini? Karena jika T = (tx, ty),
-      //  maka N = (-ty, tx) adalah vektor yang tegak lurus T
-      //  dan menunjuk ke "kiri" relatif terhadap arah gerak.
-      // ──────────────────────────────────────────────────────────
-
-      const nx = -ty; // Komponen X normal (dari rotasi tangent 90°)
-      const ny =  tx; // Komponen Y normal (dari rotasi tangent 90°)
-
-      // Setengah lebar jalan: jarak dorong dari garis tengah ke tepi
-      const halfWidth = roadWidth * 0.5;
-
-      // ──────────────────────────────────────────────────────────
-      //  EKSTRUSI VERTEX KIRI & KANAN
-      //
-      //  Vertex kiri  = titik kurva + Normal × halfWidth
-      //  Vertex kanan = titik kurva − Normal × halfWidth
-      //
-      //  "Kiri" dan "Kanan" relatif terhadap arah perjalanan kurva.
-      // ──────────────────────────────────────────────────────────
-
-      const leftX  = px + nx * halfWidth;  // Vertex kiri: dorong ke arah +Normal
-      const leftY  = py + ny * halfWidth;
-      const rightX = px - nx * halfWidth;  // Vertex kanan: dorong ke arah -Normal
-      const rightY = py - ny * halfWidth;
-
-      // ──────────────────────────────────────────────────────────
-      //  UV MAPPING
-      //
-      //  U (koordinat horizontal/melintang):
-      //    - Tepi kiri  → U = 0.0
-      //    - Tepi kanan → U = 1.0
-      //
-      //  V (koordinat vertikal/searah kurva):
-      //    - Dihitung dari panjang busur yang sudah ditempuh (arc length)
-      //    - Dinormalisasi terhadap totalLength kurva
-      //    - Ini memastikan tekstur tidak meregang/mengkerut di tikungan
-      // ──────────────────────────────────────────────────────────
-
-      // Akumulasi V dari jarak euclidean ke titik sebelumnya
-      if (prevPoint !== null) {
-        const dx = px - prevPoint.x;
-        const dy = py - prevPoint.y;
-        // Panjang arc lokal (aproksimasi Euclidean step)
-        vCoordAccum += Math.sqrt(dx * dx + dy * dy);
-      }
-
-      // Normalisasi V ke [0, 1] terhadap total panjang kurva
-      const vCoord = (totalLength > 0) ? vCoordAccum / totalLength : 0;
-
-      // Simpan titik saat ini sebagai "sebelumnya" untuk iterasi berikutnya
-      prevPoint = { x: px, y: py };
-
-      // ──────────────────────────────────────────────────────────
-      //  TULIS KE BUFFER (Format Interleave untuk gl.TRIANGLE_STRIP)
-      //
-      //  Urutan per pasang vertex:
-      //    [x_L, y_L, u_L, v_L,  x_R, y_R, u_R, v_R]
-      //
-      //  gl.TRIANGLE_STRIP membentuk segitiga dari setiap 3 vertex
-      //  berturutan, sehingga pasangan kiri-kanan membentuk quad jalan.
-      // ──────────────────────────────────────────────────────────
-
-      // — Vertex Kiri —
-      buffer[bufferIdx++] = leftX;   // Posisi X kiri
-      buffer[bufferIdx++] = leftY;   // Posisi Y kiri
-      buffer[bufferIdx++] = 0.0;     // U kiri = 0.0 (tepi kiri)
-      buffer[bufferIdx++] = vCoord;  // V searah kurva
-
-      // — Vertex Kanan —
-      buffer[bufferIdx++] = rightX;  // Posisi X kanan
-      buffer[bufferIdx++] = rightY;  // Posisi Y kanan
-      buffer[bufferIdx++] = 1.0;     // U kanan = 1.0 (tepi kanan)
-      buffer[bufferIdx++] = vCoord;  // V searah kurva (sama dengan kiri)
-    }
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    const info = gl.getProgramInfoLog(program);
+    gl.deleteProgram(program);
+    throw new Error(`[renderer.js] Gagal link program ${label}:\n${info}`);
   }
+
+  return program;
+}
+
+function _getViewProjectionMatrix(cameraState) {
+  return (
+    cameraState?.viewProjectionMatrix ||
+    cameraState?.viewMatrix ||
+    cameraState?.matrix ||
+    cameraState?.projectionMatrix ||
+    null
+  );
+}
+
+function _hexToRgb01(hex, fallback) {
+  if (typeof hex !== "string") return fallback;
+  const clean = hex.replace("#", "").trim();
+  if (!/^[0-9a-fA-F]{6}$/.test(clean)) return fallback;
+
+  const r = parseInt(clean.slice(0, 2), 16) / 255;
+  const g = parseInt(clean.slice(2, 4), 16) / 255;
+  const b = parseInt(clean.slice(4, 6), 16) / 255;
+  return [r, g, b];
+}
+
+// ============================================================
+// BAGIAN 3 — ROAD SHADER DAN ROAD RENDERER
+// ============================================================
+// Kontribusi Nisrina: shader jalan dan kelas RoadRenderer untuk menggambar mesh jalan di WebGL.
+
+const ROAD_VERT_SRC = `
+  attribute vec2 a_position;
+  attribute vec2 a_uv;
+  attribute vec4 a_roadColor;
+  attribute vec4 a_edgeColor;
+
+  uniform mat4 uViewProjectionMatrix;
+  uniform float u_time;
+  uniform float u_dayNight;
+
+  varying vec2 v_uv;
+  varying vec4 v_roadColor;
+  varying vec4 v_edgeColor;
+  varying float v_time;
+  varying float v_dayNight;
+
+  void main() {
+    gl_Position = uViewProjectionMatrix * vec4(a_position, 0.0, 1.0);
+    v_uv = a_uv;
+    v_roadColor = a_roadColor;
+    v_edgeColor = a_edgeColor;
+    v_time = u_time;
+    v_dayNight = u_dayNight;
+  }
+`;
+
+const ROAD_FRAG_SRC = `
+  precision mediump float;
+  varying vec2 v_uv;
+  varying vec4 v_roadColor;
+  varying vec4 v_edgeColor;
+  varying float v_time;
+  varying float v_dayNight;
+
+  float hash21(vec2 p) {
+    p = fract(p * vec2(123.34, 456.21));
+    p += dot(p, p + 45.32);
+    return fract(p.x * p.y);
+  }
+
+  void main() {
+    float x = clamp(v_uv.x, 0.0, 1.0);
+    float y = v_uv.y;
+    float d = min(x, 1.0 - x);
+
+    // Jalan tanah medieval dibuat tipis agar tidak terlihat seperti pipa.
+    float feather = smoothstep(0.015, 0.090, d);
+    float body = smoothstep(0.075, 0.180, d);
+    float center = smoothstep(0.260, 0.460, d);
+    float shoulder = smoothstep(0.070, 0.155, d) * (1.0 - smoothstep(0.180, 0.310, d));
+
+    vec3 road = v_roadColor.rgb;
+    vec3 edge = v_edgeColor.rgb;
+    vec3 packedColor = road * vec3(0.92, 0.84, 0.70);
+    vec3 dusty = road * vec3(1.10, 1.03, 0.86);
+
+    vec3 base = mix(edge * 0.92, packedColor, feather);
+    base = mix(base, road, body * 0.60);
+    base = mix(base, dusty, center * 0.32);
+    base = mix(base, edge * 1.04, shoulder * 0.10);
+
+    // Bekas roda dibuat tipis agar tetap sesuai nuansa medieval.
+    float rutA = 1.0 - smoothstep(0.014, 0.044, abs(x - 0.36));
+    float rutB = 1.0 - smoothstep(0.014, 0.044, abs(x - 0.64));
+    float broken = 0.55 + 0.45 * sin(y * 2.0 + sin(y * 0.41));
+    float ruts = (rutA + rutB) * 0.5 * broken * body;
+    base = mix(base, base * vec3(0.80, 0.73, 0.60), ruts * 0.20);
+
+    // Butiran tanah procedural menjaga detail jalan tetap terlihat saat zoom.
+    float grain = sin(y * 14.0 + x * 33.0) * 0.010 + sin(y * 39.0 - x * 17.0) * 0.006;
+    grain += (hash21(vec2(floor(x * 38.0), floor(y * 1.0))) - 0.5) * 0.012;
+    base += grain * body;
+
+    // Tepi jalan dibuat ringan agar persimpangan tidak terlihat bertumpuk.
+    float outer = 1.0 - smoothstep(0.018, 0.075, d);
+    base = mix(base, edge * 0.88, outer * 0.20);
+
+    float night = clamp(v_dayNight, 0.0, 1.0);
+    float dusk = smoothstep(0.25, 0.62, night) * (1.0 - smoothstep(0.68, 0.92, night));
+    base = mix(base, base * vec3(1.06, 0.91, 0.72), dusk * 0.08);
+    base = mix(base, base * vec3(0.60, 0.66, 0.83), smoothstep(0.46, 1.0, night) * 0.18);
+
+    gl_FragColor = vec4(base, 1.0);
+  }
+`;
+
+class RoadRenderer {
+  constructor(gl) {
+    this.gl = gl;
+    this.program = _createProgram(
+      gl,
+      ROAD_VERT_SRC,
+      ROAD_FRAG_SRC,
+      "RoadRenderer",
+    );
+
+    this.aPosition = gl.getAttribLocation(this.program, "a_position");
+    this.aUv = gl.getAttribLocation(this.program, "a_uv");
+    this.aRoadColor = gl.getAttribLocation(this.program, "a_roadColor");
+    this.aEdgeColor = gl.getAttribLocation(this.program, "a_edgeColor");
+
+    this.uCamera = gl.getUniformLocation(this.program, "uViewProjectionMatrix");
+    this.uTime = gl.getUniformLocation(this.program, "u_time");
+    this.uDayNight = gl.getUniformLocation(this.program, "u_dayNight");
+
+    this.vbo = gl.createBuffer();
+  }
+}
+
+// ============================================================
+// BAGIAN 4 — MATEMATIKA JALAN BÉZIER
+// ============================================================
+// Kontribusi Nisrina: fungsi Bézier, pembentukan mesh triangle jalan, dan setup vertex buffer jalan.
+
+function _distance2D(a, b) {
+  const dx = (b.x || 0) - (a.x || 0);
+  const dy = (b.y || 0) - (a.y || 0);
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function _normalize2D(x, y) {
+  const len = Math.sqrt(x * x + y * y);
+  if (len < 1e-6) return { x: 1, y: 0 };
+  return { x: x / len, y: y / len };
+}
+
+function _cubicBezierPoint(P0, P1, P2, P3, t) {
+  const mt = 1 - t;
+  const mt2 = mt * mt;
+  const mt3 = mt2 * mt;
+  const t2 = t * t;
+  const t3 = t2 * t;
 
   return {
-    vertices:    buffer,                                    // Float32Array siap untuk VBO
-    vertexCount: totalSteps * VERTEX_PER_STEP,             // Untuk glDrawArrays count
-    stride:      FLOATS_PER_VERTEX * Float32Array.BYTES_PER_ELEMENT, // 16 byte
-    totalLength: totalLength                               // Info debug / LOD
+    x: mt3 * P0.x + 3 * mt2 * t * P1.x + 3 * mt * t2 * P2.x + t3 * P3.x,
+    y: mt3 * P0.y + 3 * mt2 * t * P1.y + 3 * mt * t2 * P2.y + t3 * P3.y,
   };
 }
 
-// ─────────────────────────────────────────────────────────────
-//  FUNGSI PEMBANTU: computeSmoothControlPoints
-// ─────────────────────────────────────────────────────────────
+function _cubicBezierTangent(P0, P1, P2, P3, t) {
+  const mt = 1 - t;
+  const mt2 = mt * mt;
+  const t2 = t * t;
 
-/**
- * Menghitung Titik Kontrol P1 dan P2 untuk setiap segmen Bézier
- * secara otomatis menggunakan metode konversi Catmull-Rom → Bézier Kubik.
- *
- * Prinsip Matematika:
- *   Dalam Catmull-Rom Spline, tangent di titik Pᵢ diarahkan dari
- *   Pᵢ₋₁ ke Pᵢ₊₁. Kita konversi tangent ini menjadi titik kontrol
- *   Bézier dengan rumus:
- *
- *     P1 (kontrol keluar dari P0) = P0 + tangent_P0 × tension
- *     P2 (kontrol masuk ke P3)    = P3 − tangent_P3 × tension
- *
- *   Di mana tangent_Pᵢ = (Pᵢ₊₁ − Pᵢ₋₁) × 0.5
- *
- * @param {Array<{x: number, y: number}>} pts  Array waypoints
- * @param {number} tension  Faktor ketegangan (0.0–0.5)
- * @returns {Array<{P0, P1, P2, P3}>} Array titik kontrol per segmen
- */
-function computeSmoothControlPoints(pts, tension) {
-  const segments = [];
+  const x =
+    3 * mt2 * (P1.x - P0.x) +
+    6 * mt * t * (P2.x - P1.x) +
+    3 * t2 * (P3.x - P2.x);
 
-  for (let i = 0; i < pts.length - 1; i++) {
+  const y =
+    3 * mt2 * (P1.y - P0.y) +
+    6 * mt * t * (P2.y - P1.y) +
+    3 * t2 * (P3.y - P2.y);
 
-    const P0 = pts[i];       // Anchor awal segmen ini
-    const P3 = pts[i + 1];   // Anchor akhir segmen ini
+  return _normalize2D(x, y);
+}
 
-    // ── Tentukan titik "ghost" untuk endpoint ──
-    // Untuk titik pertama: bayangkan ada titik semu sebelum P0
-    // (refleksi P1 terhadap P0) agar tangent tidak terpotong.
-    const prev = (i > 0)
-      ? pts[i - 1]                              // Waypoint sebelumnya (nyata)
-      : { x: 2 * P0.x - P3.x,                  // Titik semu: cerminan P3 di P0
-          y: 2 * P0.y - P3.y };
+function _stableHash01(text) {
+  let h = 2166136261;
+  const s = String(text);
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+  }
+  return ((h >>> 0) % 1000) / 1000;
+}
 
-    // Untuk titik terakhir: titik semu setelah P3
-    const next = (i < pts.length - 2)
-      ? pts[i + 2]                              // Waypoint selanjutnya (nyata)
-      : { x: 2 * P3.x - P0.x,                  // Titik semu: cerminan P0 di P3
-          y: 2 * P3.y - P0.y };
+function _makeCurvedControls(
+  a,
+  b,
+  edgeId,
+  curveStrength = DEFAULT_EDGE_CURVE_STRENGTH,
+) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const len = Math.sqrt(dx * dx + dy * dy) || 1;
 
-    // ── Hitung Tangent di P0 ──
-    // Tangent Catmull-Rom: arah dari titik sebelumnya ke titik berikutnya
-    //   T₀ = (P3 - prev) × 0.5
-    // Faktor 0.5 berasal dari rumus Catmull-Rom standar (chord rata-rata)
-    const tangent0x = (P3.x - prev.x) * 0.5;  // Komponen X tangent di P0
-    const tangent0y = (P3.y - prev.y) * 0.5;  // Komponen Y tangent di P0
+  const tx = dx / len;
+  const ty = dy / len;
 
-    // ── Hitung Tangent di P3 ──
-    //   T₃ = (next - P0) × 0.5
-    const tangent3x = (next.x - P0.x) * 0.5;  // Komponen X tangent di P3
-    const tangent3y = (next.y - P0.y) * 0.5;  // Komponen Y tangent di P3
+  const nx = -ty;
+  const ny = tx;
 
-    // ── Hitung Titik Kontrol P1 dan P2 ──
-    //
-    //  P1 = P0 + T₀ × tension
-    //  (Ditempatkan di sepanjang tangent keluar dari P0)
-    const P1 = {
-      x: P0.x + tangent0x * tension,   // P1.x: geser P0 ke arah tangent
-      y: P0.y + tangent0y * tension    // P1.y: geser P0 ke arah tangent
-    };
+  const hash = _stableHash01(edgeId || `${a.id}_${b.id}`);
+  const direction = hash < 0.5 ? -1 : 1;
 
-    //  P2 = P3 - T₃ × tension
-    //  (Ditempatkan "mundur" dari P3 berlawanan tangent masuk)
-    const P2 = {
-      x: P3.x - tangent3x * tension,   // P2.x: tarik mundur dari P3
-      y: P3.y - tangent3y * tension    // P2.y: tarik mundur dari P3
-    };
+  // Kurva dibuat proporsional terhadap panjang edge agar jalan tidak tampak seperti grid kaku.
+  const bend = Math.min(len * 0.22, curveStrength) * direction;
 
-    // ── Deteksi & Mitigasi Tikungan Tajam ──
-    // Periksa sudut antara tangent segmen saat ini dan segmen berikutnya
-    if (i < pts.length - 2) {
-      const nextTangentX = pts[i + 2].x - P3.x;
-      const nextTangentY = pts[i + 2].y - P3.y;
+  return {
+    P0: a,
+    P1: {
+      x: a.x + dx * 0.33 + nx * bend,
+      y: a.y + dy * 0.33 + ny * bend,
+    },
+    P2: {
+      x: a.x + dx * 0.66 + nx * bend,
+      y: a.y + dy * 0.66 + ny * bend,
+    },
+    P3: b,
+  };
+}
 
-      // Dot product untuk mendapatkan kosinus sudut antar tangent
-      // cos θ = (T₃ · T_next) / (|T₃| × |T_next|)
-      const dot = tangent3x * nextTangentX + tangent3y * nextTangentY;
-      const mag3    = Math.sqrt(tangent3x ** 2 + tangent3y ** 2);
-      const magNext = Math.sqrt(nextTangentX ** 2 + nextTangentY ** 2);
+function _terrainColors(edge, roadStyle) {
+  const fallbackRoad = _hexToRgb01(roadStyle?.roadColor, [0.82, 0.67, 0.42]);
+  const fallbackEdge = _hexToRgb01(roadStyle?.edgeColor, [0.54, 0.4, 0.24]);
+  switch (edge?.terrain) {
+    case "bridge":
+      return { road: [0.64, 0.43, 0.24, 1.0], edge: [0.36, 0.22, 0.12, 1.0] };
+    case "stone":
+      return { road: [0.66, 0.61, 0.51, 1.0], edge: [0.43, 0.38, 0.3, 1.0] };
+    case "mud":
+      return { road: [0.63, 0.49, 0.3, 1.0], edge: [0.42, 0.3, 0.17, 1.0] };
+    case "dirt":
+    default:
+      return { road: [...fallbackRoad, 1.0], edge: [...fallbackEdge, 1.0] };
+  }
+}
 
-      if (mag3 > 1e-6 && magNext > 1e-6) {
-        // Clamp untuk keamanan domain acos: [-1, 1]
-        const cosAngle = Math.max(-1, Math.min(1, dot / (mag3 * magNext)));
-        const angle    = Math.acos(cosAngle); // Sudut dalam radian
+function _pushRoadVertex(buffer, x, y, u, v, roadColor, edgeColor) {
+  // Layout: x,y,u,v, road rgba, edge rgba = 12 float.
+  buffer.push(
+    x,
+    y,
+    u,
+    v,
+    roadColor[0],
+    roadColor[1],
+    roadColor[2],
+    roadColor[3],
+    edgeColor[0],
+    edgeColor[1],
+    edgeColor[2],
+    edgeColor[3],
+  );
+}
 
-        // Jika tikungan tajam, perkecil tension agar kontrol mendekat anchor
-        // Ini mencegah "overshoot" kurva yang bisa menyebabkan self-intersection
-        if (angle > Math.PI - SHARP_TURN_THRESHOLD) {
-          const reductionFactor = 0.5; // Kurangi separuh tension di tikungan tajam
-          P2.x = P3.x - tangent3x * tension * reductionFactor;
-          P2.y = P3.y - tangent3y * tension * reductionFactor;
+function _pushRoadQuad(
+  buffer,
+  leftA,
+  rightA,
+  leftB,
+  rightB,
+  v0,
+  v1,
+  roadColor,
+  edgeColor,
+) {
+  _pushRoadVertex(buffer, leftA.x, leftA.y, 0.0, v0, roadColor, edgeColor);
+  _pushRoadVertex(buffer, rightA.x, rightA.y, 1.0, v0, roadColor, edgeColor);
+  _pushRoadVertex(buffer, leftB.x, leftB.y, 0.0, v1, roadColor, edgeColor);
+
+  _pushRoadVertex(buffer, leftB.x, leftB.y, 0.0, v1, roadColor, edgeColor);
+  _pushRoadVertex(buffer, rightA.x, rightA.y, 1.0, v0, roadColor, edgeColor);
+  _pushRoadVertex(buffer, rightB.x, rightB.y, 1.0, v1, roadColor, edgeColor);
+}
+
+function _resolveEdgeWidth(edge, roadStyle) {
+  if (Number.isFinite(edge?.width) && edge.width > 0) return edge.width;
+
+  switch (edge?.category) {
+    case "main":
+      return roadStyle?.mainWidth ?? 78;
+    case "secondary":
+      return roadStyle?.secondaryWidth ?? 60;
+    case "branch":
+      return roadStyle?.branchWidth ?? 46;
+    default:
+      return roadStyle?.defaultWidth ?? DEFAULT_ROAD_WIDTH;
+  }
+}
+
+function _appendBezierRoadEdge(out, a, b, edge, segments, roadStyle) {
+  const roadWidth = _resolveEdgeWidth(edge, roadStyle);
+  const colors = _terrainColors(edge, roadStyle);
+
+  const controls =
+    edge?.curve?.p1 && edge?.curve?.p2
+      ? {
+          P0: a,
+          P1: edge.curve.p1,
+          P2: edge.curve.p2,
+          P3: b,
         }
+      : _makeCurvedControls(a, b, edge?.id || `${a.id}_${b.id}`);
+
+  const half = roadWidth * 0.5;
+
+  let prevLeft = null;
+  let prevRight = null;
+  let prevPoint = null;
+  let distanceAccum = 0;
+
+  for (let i = 0; i <= segments; i++) {
+    const rawT = i / segments;
+    const t =
+      -ROAD_ENDPOINT_EXTENSION + rawT * (1.0 + ROAD_ENDPOINT_EXTENSION * 2.0);
+    const p = _cubicBezierPoint(
+      controls.P0,
+      controls.P1,
+      controls.P2,
+      controls.P3,
+      t,
+    );
+    const tangent = _cubicBezierTangent(
+      controls.P0,
+      controls.P1,
+      controls.P2,
+      controls.P3,
+      t,
+    );
+
+    const nx = -tangent.y;
+    const ny = tangent.x;
+
+    const left = { x: p.x + nx * half, y: p.y + ny * half };
+    const right = { x: p.x - nx * half, y: p.y - ny * half };
+
+    if (prevPoint) {
+      const stepLen = _distance2D(prevPoint, p);
+      const v0 = distanceAccum / Math.max(roadWidth, 1);
+      distanceAccum += stepLen;
+      const v1 = distanceAccum / Math.max(roadWidth, 1);
+
+      _pushRoadQuad(
+        out,
+        prevLeft,
+        prevRight,
+        left,
+        right,
+        v0,
+        v1,
+        colors.road,
+        colors.edge,
+      );
+    }
+
+    prevPoint = p;
+    prevLeft = left;
+    prevRight = right;
+  }
+}
+
+function _buildNodeJunctionCircles(out, nodeMap, edges, roadStyle) {
+  const nodeMaxWidth = new Map();
+  const nodeTerrain = new Map();
+
+  for (const edge of edges || []) {
+    if (!edge) continue;
+
+    const width = _resolveEdgeWidth(edge, roadStyle);
+    const terrain = edge.terrain || "dirt";
+
+    for (const nodeId of [edge.from, edge.to]) {
+      if (!nodeMap.has(nodeId)) continue;
+
+      const currentWidth = nodeMaxWidth.get(nodeId) || 0;
+      if (width > currentWidth) {
+        nodeMaxWidth.set(nodeId, width);
+        nodeTerrain.set(nodeId, terrain);
       }
     }
-
-    segments.push({ P0, P1, P2, P3 });
   }
 
-  return segments;
+  for (const [nodeId, maxWidth] of nodeMaxWidth) {
+    const node = nodeMap.get(nodeId);
+    if (!node) continue;
+
+    const terrain = nodeTerrain.get(nodeId) || "dirt";
+    const colors = _terrainColors({ terrain }, roadStyle);
+    const radius = maxWidth * (roadStyle?.junctionRadiusMultiplier ?? 0.58);
+
+    for (let i = 0; i < JUNCTION_CIRCLE_SEGMENTS; i++) {
+      const a0 = (i / JUNCTION_CIRCLE_SEGMENTS) * Math.PI * 2;
+      const a1 = ((i + 1) / JUNCTION_CIRCLE_SEGMENTS) * Math.PI * 2;
+
+      _pushRoadVertex(out, node.x, node.y, 0.5, 0.5, colors.road, colors.road);
+      _pushRoadVertex(
+        out,
+        node.x + Math.cos(a0) * radius,
+        node.y + Math.sin(a0) * radius,
+        0.5,
+        0.5,
+        colors.road,
+        colors.road,
+      );
+      _pushRoadVertex(
+        out,
+        node.x + Math.cos(a1) * radius,
+        node.y + Math.sin(a1) * radius,
+        0.5,
+        0.5,
+        colors.road,
+        colors.road,
+      );
+    }
+  }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  FUNGSI PEMBANTU: estimateTotalArcLength
-// ─────────────────────────────────────────────────────────────
+function _normalizeRoadInput(roadData) {
+  if (Array.isArray(roadData)) {
+    return {
+      rute_jalan: roadData,
+      roadGraph: null,
+      roadStyle: null,
+    };
+  }
 
-/**
- * Mengestimasi total panjang busur (arc length) seluruh spline
- * menggunakan metode piecewise linear (subdivisi kurva).
- *
- * Digunakan sebagai normalisasi koordinat V dalam UV mapping.
- *
- * @param {Array<{P0, P1, P2, P3}>} controlPoints  Output computeSmoothControlPoints
- * @param {number} samplesPerSegment  Jumlah sampel per segmen (biasanya = segments)
- * @returns {number} Estimasi total panjang kurva dalam world-unit
- */
-function estimateTotalArcLength(controlPoints, samplesPerSegment) {
-  let totalLength = 0;
+  if (!roadData || typeof roadData !== "object") {
+    return {
+      rute_jalan: [],
+      roadGraph: null,
+      roadStyle: null,
+    };
+  }
 
-  for (const { P0, P1, P2, P3 } of controlPoints) {
-    let prevX = P0.x;
-    let prevY = P0.y;
+  return {
+    rute_jalan:
+      roadData.rute_jalan || roadData.roads || roadData.waypoints || [],
+    roadGraph: roadData.roadGraph || null,
+    roadStyle: roadData.roadStyle || null,
+  };
+}
 
-    for (let s = 1; s <= samplesPerSegment; s++) {
-      const t   = s / samplesPerSegment;
-      const mt  = 1 - t;
-      const mt2 = mt * mt;
-      const mt3 = mt2 * mt;
-      const t2  = t * t;
-      const t3  = t2 * t;
+function _generateRoadNetworkTriangles(
+  roadData,
+  segments = DEFAULT_ROAD_SEGMENTS,
+) {
+  const normalized = _normalizeRoadInput(roadData);
+  const vertices = [];
+  const roadStyle = normalized.roadStyle || {};
 
-      // Evaluasi posisi B(t) — sama dengan rumus di fungsi utama
-      const cx = mt3 * P0.x + 3 * mt2 * t * P1.x + 3 * mt * t2 * P2.x + t3 * P3.x;
-      const cy = mt3 * P0.y + 3 * mt2 * t * P1.y + 3 * mt * t2 * P2.y + t3 * P3.y;
+  if (
+    normalized.roadGraph &&
+    Array.isArray(normalized.roadGraph.nodes) &&
+    Array.isArray(normalized.roadGraph.edges)
+  ) {
+    const nodeMap = new Map();
 
-      // Tambahkan panjang chord dari titik sebelumnya
-      const dx = cx - prevX;
-      const dy = cy - prevY;
-      totalLength += Math.sqrt(dx * dx + dy * dy); // Panjang Euclidean segmen kecil
+    for (const node of normalized.roadGraph.nodes) {
+      if (!node || !node.id) continue;
+      nodeMap.set(node.id, {
+        id: node.id,
+        x: Number(node.x) || 0,
+        y: Number(node.y) || 0,
+      });
+    }
 
-      prevX = cx;
-      prevY = cy;
+    for (let i = 0; i < normalized.roadGraph.edges.length; i++) {
+      const edge = normalized.roadGraph.edges[i];
+      const a = nodeMap.get(edge.from);
+      const b = nodeMap.get(edge.to);
+
+      if (!a || !b) {
+        console.warn(
+          `[setupRoadGeometry] Edge diabaikan karena node tidak valid: ${edge.from} → ${edge.to}`,
+        );
+        continue;
+      }
+
+      _appendBezierRoadEdge(
+        vertices,
+        a,
+        b,
+        { ...edge, id: edge.id || `${edge.from}_${edge.to}_${i}` },
+        segments,
+        roadStyle,
+      );
+    }
+    // Ujung edge sedikit diperpanjang agar sambungan jalan tertutup tanpa lingkaran tambahan di persimpangan.
+
+    return {
+      vertices: new Float32Array(vertices),
+      vertexCount: vertices.length / 12,
+      stride: 12 * Float32Array.BYTES_PER_ELEMENT,
+      drawMode: "TRIANGLES",
+    };
+  }
+
+  const route = normalized.rute_jalan;
+  for (let i = 0; i < route.length - 1; i++) {
+    const a = {
+      id: route[i].id || `rj_${i}`,
+      x: Number(route[i].x) || 0,
+      y: Number(route[i].y) || 0,
+    };
+    const b = {
+      id: route[i + 1].id || `rj_${i + 1}`,
+      x: Number(route[i + 1].x) || 0,
+      y: Number(route[i + 1].y) || 0,
+    };
+
+    _appendBezierRoadEdge(
+      vertices,
+      a,
+      b,
+      { id: `${a.id}_${b.id}_${i}`, terrain: "dirt" },
+      segments,
+      roadStyle,
+    );
+  }
+
+  return {
+    vertices: new Float32Array(vertices),
+    vertexCount: vertices.length / 12,
+    stride: 12 * Float32Array.BYTES_PER_ELEMENT,
+    drawMode: "TRIANGLES",
+  };
+}
+
+export function generateBezierRoad(
+  waypoints,
+  segments = DEFAULT_ROAD_SEGMENTS,
+  roadWidth = DEFAULT_ROAD_WIDTH,
+) {
+  const networkData = {
+    roadStyle: {
+      defaultWidth: roadWidth,
+    },
+    roadGraph: {
+      nodes: waypoints || [],
+      edges: [],
+    },
+  };
+
+  if (Array.isArray(waypoints)) {
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      networkData.roadGraph.edges.push({
+        from: waypoints[i].id ?? `route_${i}`,
+        to: waypoints[i + 1].id ?? `route_${i + 1}`,
+        weight: 1.0,
+        terrain: "dirt",
+        width: roadWidth,
+      });
     }
   }
 
-  return totalLength;
+  return _generateRoadNetworkTriangles(networkData, segments);
 }
 
-// ─────────────────────────────────────────────────────────────
-//  CONTOH PENGGUNAAN (DEBUGGING / UNIT TEST)
-// ─────────────────────────────────────────────────────────────
+export function setupRoadGeometry(gl, locations, roadData) {
+  void locations;
 
-/*
-  // Contoh data dari data.json:
-  const waypoints = [
-    { id: "node_01", x: -920, y: -780 },
-    { id: "node_02", x: -400, y: -200 },
-    { id: "node_03", x:  150, y:  100 },
-    { id: "node_04", x:  600, y:  -50 }
-  ];
+  const road = _generateRoadNetworkTriangles(roadData, DEFAULT_ROAD_SEGMENTS);
 
-  const road = generateBezierRoad(waypoints, 16, 60);
+  if (!road || road.vertexCount === 0) {
+    console.warn("[setupRoadGeometry] Data jalan kosong atau tidak valid.");
+    return null;
+  }
 
-  console.log("Total vertex  :", road.vertexCount);
-  console.log("Buffer length :", road.vertices.length);
-  console.log("Stride (bytes):", road.stride);
-  console.log("Total length  :", road.totalLength.toFixed(2), "units");
-
-  // Upload ke WebGL VBO:
-  const vbo = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+  const rendererInstance = new RoadRenderer(gl);
+  gl.bindBuffer(gl.ARRAY_BUFFER, rendererInstance.vbo);
   gl.bufferData(gl.ARRAY_BUFFER, road.vertices, gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-  // Bind attribute: posisi (x, y) → location 0
-  gl.vertexAttribPointer(0, 2, gl.FLOAT, false, road.stride, 0);
-  gl.enableVertexAttribArray(0);
+  console.log(
+    `[setupRoadGeometry] Geometri jalan siap (${road.vertexCount} vertex).`,
+  );
 
-  // Bind attribute: UV (u, v) → location 1
-  gl.vertexAttribPointer(1, 2, gl.FLOAT, false, road.stride, 2 * 4);
-  gl.enableVertexAttribArray(1);
+  return {
+    rendererInstance,
+    vertexCount: road.vertexCount,
+    stride: road.stride,
+    drawMode: gl.TRIANGLES,
+  };
+}
 
-  // Draw call:
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, road.vertexCount);
-*/
+export function drawRoads(gl, locations, rendererState, cameraState) {
+  void locations;
 
-/**
- * ============================================================
- * WebGL 2.5D Isometric Sprite Renderer
- * Engine murni Vanilla JS + WebGL — tanpa library eksternal
- * ============================================================
- *
- * ARSITEKTUR:
- *  - setupTexture()          → Upload spritesheet ke GPU, NEAREST filter
- *  - setupSpriteGeometry()  → Membuat instance SpriteRenderer dan menyimpan data objek
- *  - drawSprites()          → Sort, build batched VBO, single draw call
- *  - buildShaders()         → Vertex + Fragment shader helpers (internal)
- *
- * CATATAN INTEGRASI:
- *  Renderer sprite ini TIDAK lagi membuat camera matrix sendiri.
- *  Matrix 4x4 wajib berasal dari engine.js melalui:
- *    cameraState.viewProjectionMatrix
- *
- * CATATAN KOORDINAT ISOMETRIK:
- *  Kita pakai konvensi "painter's algorithm" standar:
- *  objek dengan Y lebih BESAR = lebih dekat ke kamera (digambar terakhir / di atas)
- *  sehingga sort ascending by (y + h) — "foot point" bawah sprite.
- * ============================================================
- */
+  const road = rendererState?.roads;
+  const renderer = road?.rendererInstance;
+  const matrix = _getViewProjectionMatrix(cameraState);
 
-// ─────────────────────────────────────────────────────────────
-// SECTION 1 — SHADER SOURCE
-// ─────────────────────────────────────────────────────────────
+  if (!road || !renderer || !renderer.vbo) return;
+
+  if (!matrix || matrix.length !== 16) {
+    console.warn("[drawRoads] cameraState.viewProjectionMatrix tidak valid.");
+    return;
+  }
+
+  const FLOAT_SIZE = Float32Array.BYTES_PER_ELEMENT;
+
+  gl.useProgram(renderer.program);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, renderer.vbo);
+
+  gl.enableVertexAttribArray(renderer.aPosition);
+  gl.vertexAttribPointer(
+    renderer.aPosition,
+    2,
+    gl.FLOAT,
+    false,
+    road.stride,
+    0,
+  );
+
+  gl.enableVertexAttribArray(renderer.aUv);
+  gl.vertexAttribPointer(
+    renderer.aUv,
+    2,
+    gl.FLOAT,
+    false,
+    road.stride,
+    2 * FLOAT_SIZE,
+  );
+
+  gl.enableVertexAttribArray(renderer.aRoadColor);
+  gl.vertexAttribPointer(
+    renderer.aRoadColor,
+    4,
+    gl.FLOAT,
+    false,
+    road.stride,
+    4 * FLOAT_SIZE,
+  );
+
+  gl.enableVertexAttribArray(renderer.aEdgeColor);
+  gl.vertexAttribPointer(
+    renderer.aEdgeColor,
+    4,
+    gl.FLOAT,
+    false,
+    road.stride,
+    8 * FLOAT_SIZE,
+  );
+
+  gl.uniformMatrix4fv(renderer.uCamera, false, matrix);
+  gl.uniform1f(renderer.uTime, rendererState?.simulationTime || 0.0);
+  gl.uniform1f(renderer.uDayNight, rendererState?.dayNightProgress || 0.0);
+
+  gl.drawArrays(gl.TRIANGLES, 0, road.vertexCount);
+
+  gl.disableVertexAttribArray(renderer.aPosition);
+  gl.disableVertexAttribArray(renderer.aUv);
+  gl.disableVertexAttribArray(renderer.aRoadColor);
+  gl.disableVertexAttribArray(renderer.aEdgeColor);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, null);
+}
+
+// ============================================================
+// BAGIAN 5 — TEXTURE SETUP
+// ============================================================
+// Kontribusi Dea: setup texture spritesheet sebagai sumber gambar seluruh sprite medieval.
+
+export function setupTexture(gl, locations, image) {
+  void locations;
+
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+  texture._imageWidth = image.width;
+  texture._imageHeight = image.height;
+
+  gl.bindTexture(gl.TEXTURE_2D, null);
+
+  console.log(
+    `[setupTexture] Texture spritesheet siap (${image.width}x${image.height}).`,
+  );
+  return texture;
+}
+
+// ============================================================
+// BAGIAN 6 — SPRITE SHADER DAN SPRITE RENDERER
+// ============================================================
+// Kontribusi Dea: sprite shader, UV mapping, atlas lookup, batching sprite, z-sorting, occlusion, dan sprite kereta.
 
 const SPRITE_VERT_SRC = `
-  attribute vec2 a_position;   // posisi pixel di dunia
-  attribute vec2 a_uv;         // koordinat UV (0..1)
+  attribute vec2 a_position;
+  attribute vec2 a_uv;
+  attribute vec4 a_color;
+  attribute float a_effect;
 
-  uniform mat4 uViewProjectionMatrix; // matrix 4x4 dari engine.js
+  uniform mat4 uViewProjectionMatrix;
 
   varying vec2 v_uv;
+  varying vec4 v_color;
+  varying float v_effect;
 
   void main() {
-    // Transformasi world-space → clip-space ditangani penuh oleh engine.js.
     gl_Position = uViewProjectionMatrix * vec4(a_position, 0.0, 1.0);
     v_uv = a_uv;
+    v_color = a_color;
+    v_effect = a_effect;
   }
 `;
 
@@ -520,241 +811,305 @@ const SPRITE_FRAG_SRC = `
   precision mediump float;
 
   uniform sampler2D u_texture;
-  uniform float u_alpha;        // global alpha per-batch (1.0 = opaque)
+  uniform float u_time;
+  uniform float u_dayNight;
 
   varying vec2 v_uv;
+  varying vec4 v_color;
+  varying float v_effect;
 
   void main() {
-    vec4 color = texture2D(u_texture, v_uv);
+    vec4 texColor = texture2D(u_texture, v_uv);
+    if (texColor.a < 0.02) discard;
 
-    // Buang fragment yang hampir transparan agar tepi PNG bersih.
-    if (color.a < 0.01) discard;
+    vec3 rgb = texColor.rgb;
 
-    gl_FragColor = vec4(color.rgb, color.a * u_alpha);
+    // Efek parit air mengalir berbasis u_time.
+    if (v_effect > 0.5) {
+      float waveA = sin(v_uv.x * 92.0 + v_uv.y * 38.0 + u_time * 6.0);
+      float waveB = sin(v_uv.x * 27.0 - v_uv.y * 73.0 - u_time * 3.8);
+      float wave = waveA * 0.026 + waveB * 0.018;
+      rgb += vec3(0.0, 0.065, 0.085) + wave * 1.8;
+    }
+
+    float night = clamp(u_dayNight, 0.0, 1.0);
+    float dusk = smoothstep(0.25, 0.65, night) * (1.0 - smoothstep(0.70, 1.0, night));
+
+    vec3 duskTint = vec3(1.08, 0.86, 0.62);
+    vec3 nightTint = vec3(0.45, 0.55, 0.78);
+
+    rgb = mix(rgb, rgb * duskTint, dusk * 0.18);
+    rgb = mix(rgb, rgb * nightTint, smoothstep(0.45, 1.0, night) * 0.42);
+
+    gl_FragColor = vec4(rgb * v_color.rgb, texColor.a * v_color.a);
   }
 `;
 
-// ─────────────────────────────────────────────────────────────
-// SECTION 2 — SHADER HELPERS (internal)
-// ─────────────────────────────────────────────────────────────
+export class SpriteRenderer {
+  constructor(gl) {
+    this.gl = gl;
+    this.program = _createProgram(
+      gl,
+      SPRITE_VERT_SRC,
+      SPRITE_FRAG_SRC,
+      "SpriteRenderer",
+    );
 
-/**
- * Kompilasi satu shader.
- * @param {WebGLRenderingContext} gl
- * @param {number} type   gl.VERTEX_SHADER | gl.FRAGMENT_SHADER
- * @param {string} source GLSL source string
- * @returns {WebGLShader}
- */
-function _compileShader(gl, type, source) {
-  const shader = gl.createShader(type);
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
+    this.aPosition = gl.getAttribLocation(this.program, "a_position");
+    this.aUv = gl.getAttribLocation(this.program, "a_uv");
+    this.aColor = gl.getAttribLocation(this.program, "a_color");
+    this.aEffect = gl.getAttribLocation(this.program, "a_effect");
 
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    const info = gl.getShaderInfoLog(shader);
-    gl.deleteShader(shader);
-    throw new Error(`[SpriteRenderer] Shader compile error:\n${info}`);
+    this.uCamera = gl.getUniformLocation(this.program, "uViewProjectionMatrix");
+    this.uTexture = gl.getUniformLocation(this.program, "u_texture");
+    this.uTime = gl.getUniformLocation(this.program, "u_time");
+    this.uDayNight = gl.getUniformLocation(this.program, "u_dayNight");
+
+    this.vbo = gl.createBuffer();
+
+    // 1 sprite = 6 vertex. Per vertex = 9 float: x,y,u,v,r,g,b,a,effect.
+    this._maxSprites = 4096;
+    this._vertexData = new Float32Array(this._maxSprites * 6 * 9);
   }
 
-  return shader;
-}
+  _ensureCapacity(count) {
+    if (count <= this._maxSprites) return;
 
-/**
- * Link vertex + fragment shader menjadi program.
- * @param {WebGLRenderingContext} gl
- * @param {string} vertSrc
- * @param {string} fragSrc
- * @returns {WebGLProgram}
- */
-function _createProgram(gl, vertSrc, fragSrc) {
-  const program = gl.createProgram();
-  const vertShader = _compileShader(gl, gl.VERTEX_SHADER, vertSrc);
-  const fragShader = _compileShader(gl, gl.FRAGMENT_SHADER, fragSrc);
-
-  gl.attachShader(program, vertShader);
-  gl.attachShader(program, fragShader);
-  gl.linkProgram(program);
-
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    const info = gl.getProgramInfoLog(program);
-    gl.deleteProgram(program);
-    gl.deleteShader(vertShader);
-    gl.deleteShader(fragShader);
-    throw new Error(`[SpriteRenderer] Program link error:\n${info}`);
+    this._maxSprites = Math.max(count * 2, this._maxSprites * 2);
+    this._vertexData = new Float32Array(this._maxSprites * 6 * 9);
+    console.warn(
+      `[SpriteRenderer] Buffer sprite diperluas ke ${this._maxSprites} sprite.`,
+    );
   }
-
-  // Shader object boleh dihapus setelah program berhasil di-link.
-  gl.deleteShader(vertShader);
-  gl.deleteShader(fragShader);
-
-  return program;
 }
 
-/**
- * Normalisasi input objek agar renderer tetap aman bila data dari JSON
- * berbentuk array langsung atau terbungkus dalam properti umum.
- *
- * @param {Array|Object} objects
- * @returns {Array}
- */
 function _normalizeSpriteObjects(objects) {
   if (Array.isArray(objects)) return objects;
 
+  if (objects && Array.isArray(objects.objek_statis))
+    return objects.objek_statis;
   if (objects && Array.isArray(objects.buildings)) return objects.buildings;
   if (objects && Array.isArray(objects.objects)) return objects.objects;
   if (objects && Array.isArray(objects.sprites)) return objects.sprites;
 
-  if (objects && typeof objects === 'object') {
-    return Object.values(objects).filter(item => {
-      return item && typeof item === 'object' && !Array.isArray(item);
-    });
-  }
-
   return [];
 }
 
-/**
- * Ambil key sprite dari objek scene.
- * Default utama tetap `type` sesuai kode asal.
- *
- * @param {Object} obj
- * @returns {string|undefined}
- */
 function _getSpriteType(obj) {
-  return obj.type || obj.sprite || obj.spriteId || obj.atlasKey || obj.name;
+  return (
+    obj?.type ||
+    obj?.tipe ||
+    obj?.sprite ||
+    obj?.spriteId ||
+    obj?.atlasKey ||
+    obj?.name
+  );
 }
 
-/**
- * Ambil ukuran atlas dari state, dengan default 2048 sesuai aturan POT.
- *
- * @param {Object} simulationState
- * @param {Object} spriteAtlas
- * @returns {number}
- */
-function _resolveAtlasSize(simulationState, spriteAtlas) {
+function _resolveAtlas(rendererState, simulationState) {
+  return (
+    simulationState?.atlasData ||
+    simulationState?._rawMapData?.atlasData ||
+    rendererState?.atlasData ||
+    rendererState?.spriteAtlas ||
+    {}
+  );
+}
+
+function _resolveAtlasSize(rendererState, simulationState, texture) {
   return (
     simulationState?.atlasSize ||
-    simulationState?.spriteAtlasSize ||
     simulationState?.spritesheetSize ||
-    spriteAtlas?.atlasSize ||
-    2048
+    simulationState?._rawMapData?.atlasSize ||
+    rendererState?.atlasSize ||
+    texture?._imageWidth ||
+    DEFAULT_ATLAS_SIZE
   );
 }
 
-// ─────────────────────────────────────────────────────────────
-// SECTION 3 — setupTexture
-// ─────────────────────────────────────────────────────────────
-
-/**
- * Upload HTMLImageElement ke GPU sebagai WebGL texture.
- *
- * Fitur kritis:
- *  - MAG_FILTER = NEAREST  → pixel art tetap tajam saat zoom in
- *  - MIN_FILTER = NEAREST  → konsisten, tanpa blur
- *  - WRAP_S/T = CLAMP      → cegah bleeding antar sprite di atlas
- *
- * @param {WebGLRenderingContext} gl
- * @param {HTMLImageElement|ImageBitmap} image  Harus sudah loaded
- * @returns {WebGLTexture}
- */
-export function setupTexture(gl, locations, image) {
-  void locations; // Mengabaikan parameter locations dengan aman agar tidak terjadi error unused variable
-
-  const texture = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-
-  // Upload pixel data ke GPU.
-  gl.texImage2D(
-    gl.TEXTURE_2D,
-    0,               // mip level
-    gl.RGBA,         // internal format
-    gl.RGBA,         // source format
-    gl.UNSIGNED_BYTE,
-    image
-  );
-
-  // NEAREST filter menjaga karakter pixel art agar tidak blur.
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-
-  // CLAMP agar tepi sprite tidak bleeding ke sel atlas lain.
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-  gl.bindTexture(gl.TEXTURE_2D, null);
-
-  console.log(`[setupTexture] Berhasil upload texture (${image.width}x${image.height})`);
-  return texture;
+function _pushSpriteVertex(buf, ptr, x, y, u, v, color, effect) {
+  buf[ptr++] = x;
+  buf[ptr++] = y;
+  buf[ptr++] = u;
+  buf[ptr++] = v;
+  buf[ptr++] = color[0];
+  buf[ptr++] = color[1];
+  buf[ptr++] = color[2];
+  buf[ptr++] = color[3];
+  buf[ptr++] = effect || 0.0;
+  return ptr;
 }
 
-// ─────────────────────────────────────────────────────────────
-// SECTION 4 — SpriteRenderer (class reusable)
-// ─────────────────────────────────────────────────────────────
+function _pushTexturedQuad(buf, ptr, rect, uv, color, effect = 0.0) {
+  const x0 = rect.x0;
+  const y0 = rect.y0;
+  const x1 = rect.x1;
+  const y1 = rect.y1;
 
-/**
- * Class pembungkus state WebGL untuk sprite rendering.
- * Inisialisasi sekali, lalu dipakai berulang kali tiap frame.
- */
-export class SpriteRenderer {
-  /**
-   * @param {WebGLRenderingContext} gl
-   */
-  constructor(gl) {
-    this.gl = gl;
-    this.program = _createProgram(gl, SPRITE_VERT_SRC, SPRITE_FRAG_SRC);
+  const u0 = rect.flipX ? uv.u1 : uv.u0;
+  const u1 = rect.flipX ? uv.u0 : uv.u1;
+  const v0 = uv.v0;
+  const v1 = uv.v1;
 
-    // Attribute locations.
-    this.aPosition = gl.getAttribLocation(this.program, 'a_position');
-    this.aUv       = gl.getAttribLocation(this.program, 'a_uv');
+  ptr = _pushSpriteVertex(buf, ptr, x0, y0, u0, v0, color, effect);
+  ptr = _pushSpriteVertex(buf, ptr, x0, y1, u0, v1, color, effect);
+  ptr = _pushSpriteVertex(buf, ptr, x1, y0, u1, v0, color, effect);
 
-    // Uniform locations.
-    // Sinkron dengan shader baru: uViewProjectionMatrix (mat4).
-    this.uCamera  = gl.getUniformLocation(this.program, 'uViewProjectionMatrix');
-    this.uTexture = gl.getUniformLocation(this.program, 'u_texture');
-    this.uAlpha   = gl.getUniformLocation(this.program, 'u_alpha');
+  ptr = _pushSpriteVertex(buf, ptr, x1, y0, u1, v0, color, effect);
+  ptr = _pushSpriteVertex(buf, ptr, x0, y1, u0, v1, color, effect);
+  ptr = _pushSpriteVertex(buf, ptr, x1, y1, u1, v1, color, effect);
 
-    // VBO tunggal yang akan ditulis ulang tiap frame.
-    this.vbo = gl.createBuffer();
+  return ptr;
+}
 
-    // Pre-alokasi buffer besar — cukup untuk 4096 sprite.
-    // Layout per-vertex: [x, y, u, v] = 4 float = 16 bytes.
-    // Per-quad: 6 vertex (2 segitiga) = 6 * 4 = 24 float.
-    this._maxSprites = 4096;
-    this._vertexData = new Float32Array(this._maxSprites * 24);
+function _makeAtlasUv(meta, atlasSize) {
+  const inv = 1 / atlasSize;
+  const half = 0.5 * inv;
 
-    // BLEND wajib untuk transparansi PNG.
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-  }
+  return {
+    u0: meta.x * inv + half,
+    v0: meta.y * inv + half,
+    u1: (meta.x + meta.w) * inv - half,
+    v1: (meta.y + meta.h) * inv - half,
+  };
+}
 
-  /**
-   * Resize buffer internal jika objek melebihi kapasitas.
-   * @param {number} count jumlah sprite valid
-   */
-  _ensureCapacity(count) {
-    if (count > this._maxSprites) {
-      this._maxSprites = count * 2;
-      this._vertexData = new Float32Array(this._maxSprites * 24);
-      console.warn(`[SpriteRenderer] Buffer diperluas ke ${this._maxSprites} sprite`);
+function _makeStaticSpriteDrawItem(obj, atlas) {
+  const type = _getSpriteType(obj);
+  const meta = atlas[type];
+
+  if (!type || !meta) {
+    if (!_warnedMissingAtlasKeys.has(type)) {
+      console.warn(
+        `[drawSprites] Sprite tidak ditemukan di atlasData: "${type}"`,
+      );
+      _warnedMissingAtlasKeys.add(type);
     }
+    return null;
   }
+
+  const x = Number(obj.x) || 0;
+  const y = Number(obj.y) || 0;
+  const scale = obj.scale ?? 1.0;
+
+  const w = (obj.w || obj.width || meta.renderW || meta.w) * scale;
+  const h = (obj.h || obj.height || meta.renderH || meta.h) * scale;
+
+  // x/y pada JSON diperlakukan sebagai titik pijakan sprite, bukan pojok kiri atas.
+  const anchorX = obj.anchorX ?? meta.anchorX ?? 0.5;
+  const anchorY = obj.anchorY ?? meta.anchorY ?? 1.0;
+
+  const x0 = x - w * anchorX;
+  const y0 = y - h * anchorY;
+
+  const layer = obj.layer ?? meta.layer ?? 2;
+  const effect =
+    obj.effect === "water" || meta.effect === "water" || type === "parit_air"
+      ? 1.0
+      : 0.0;
+
+  return {
+    type,
+    meta,
+    x0,
+    y0,
+    x1: x0 + w,
+    y1: y0 + h,
+    flipX: Boolean(obj.flipX),
+    color: [1, 1, 1, obj.alpha ?? 1],
+    sortY: y + (obj.sortOffsetY || meta.sortOffsetY || 14),
+    layer,
+    effect,
+  };
 }
 
-// ─────────────────────────────────────────────────────────────
-// SECTION 5 — setupSpriteGeometry
-// ─────────────────────────────────────────────────────────────
+function _makeCarriageItems(simulationState, atlas) {
+  const c = simulationState?.carriage;
+  if (!c) return [];
 
-/**
- * Fungsi pembungkus agar main.js dapat menyimpan state sprite renderer
- * dalam object utama `rendererState`.
- *
- * @param {WebGLRenderingContext} gl
- * @param {Object} locations  Disediakan agar signature sinkron dengan main.js.
- *                            Tidak dipakai oleh SpriteRenderer karena class ini
- *                            mengambil lokasi attribute/uniform dari programnya sendiri.
- * @param {Array|Object} buildingData Data bangunan/sprite dari data.json.
- * @returns {{ rendererInstance: SpriteRenderer, objects: Array|Object }}
- */
+  const requestedType = c.spriteType || c.atlasKey || c.type || "kereta_kuda";
+  const meta = atlas[requestedType] || atlas.kereta_kuda;
+
+  if (!meta) {
+    if (!_warnedMissingAtlasKeys.has(requestedType)) {
+      console.warn(
+        `[drawSprites] Sprite kereta tidak ditemukan di atlasData: "${requestedType}"`,
+      );
+      _warnedMissingAtlasKeys.add(requestedType);
+    }
+    return [];
+  }
+
+  const items = [];
+
+  const baseW = meta.renderW || meta.w;
+  const baseH = meta.renderH || meta.h;
+
+  const rotationBasedFlip = Math.cos(c.rotation || 0) < 0;
+  const flipX = c.flipX ?? rotationBasedFlip;
+
+  // baseScale mengatur ukuran kereta, sedangkan scaleX/scaleY dipakai untuk squash-stretch.
+  const baseScale =
+    c.baseScale ??
+    c.renderScale ??
+    c.scale ??
+    meta.defaultScale ??
+    DEFAULT_CARRIAGE_BASE_SCALE;
+  const poseScaleX = c.scaleX ?? 1.0;
+  const poseScaleY = c.scaleY ?? 1.0;
+
+  const w = baseW * baseScale * Math.abs(poseScaleX);
+  const h = baseH * baseScale * Math.abs(poseScaleY);
+
+  const cx = Number(c.x) || 0;
+  const cy = (Number(c.y) || 0) + (Number(c.bobOffsetY) || 0);
+
+  const sh = c.shadow || {};
+  const shadowScaleX = sh.scaleX ?? 1.35;
+  const shadowScaleY = sh.scaleY ?? 0.42;
+
+  const shadowW = baseW * baseScale * shadowScaleX;
+  const shadowH = baseH * baseScale * shadowScaleY;
+  const shadowCx = Number(sh.x) || cx + 6;
+  const shadowCy = Number(sh.y) || cy + 7;
+  const skewX = Number(sh.skewX) || 0;
+
+  items.push({
+    type: requestedType,
+    meta,
+    x0: shadowCx - shadowW * 0.5 + skewX * shadowH,
+    y0: shadowCy - shadowH * 0.5,
+    x1: shadowCx + shadowW * 0.5 + skewX * shadowH,
+    y1: shadowCy + shadowH * 0.5,
+    flipX,
+    color: [0, 0, 0, sh.alpha ?? 0.35],
+    sortY: shadowCy - 1,
+    layer: c.layer ?? meta.layer ?? 2,
+    effect: 0.0,
+  });
+
+  const anchorX = c.anchorX ?? meta.anchorX ?? 0.5;
+  const anchorY = c.anchorY ?? meta.anchorY ?? 0.95;
+  const x0 = cx - w * anchorX;
+  const y0 = cy - h * anchorY;
+
+  items.push({
+    type: requestedType,
+    meta,
+    x0,
+    y0,
+    x1: x0 + w,
+    y1: y0 + h,
+    flipX,
+    color: [1, 1, 1, c.alpha ?? 1],
+    sortY: c.y + (c.sortOffsetY ?? -12),
+    layer: c.layer ?? meta.layer ?? 2,
+    effect: 0.0,
+  });
+
+  return items;
+}
+
 export function setupSpriteGeometry(gl, locations, buildingData) {
   void locations;
 
@@ -762,323 +1117,239 @@ export function setupSpriteGeometry(gl, locations, buildingData) {
 
   return {
     rendererInstance,
-    objects: buildingData
+    objects: _normalizeSpriteObjects(buildingData),
   };
 }
 
-// ─────────────────────────────────────────────────────────────
-// SECTION 6 — drawSprites (fungsi utama)
-// ─────────────────────────────────────────────────────────────
-
-/**
- * Render semua sprite dalam satu draw call (batched rendering).
- *
- * Signature ini sengaja mengikuti pemanggilan dari main.js:
- *   drawSprites(gl, locations, rendererState, simulationState, cameraState)
- *
- * Data yang dibongkar dari state:
- *  - rendererState.sprites.rendererInstance → program, VBO, buffer internal
- *  - rendererState.sprites.objects          → data bangunan/sprite
- *  - rendererState.texture                  → WebGLTexture hasil setupTexture()
- *  - simulationState.atlasData              → metadata UV atlas
- *  - cameraState.viewProjectionMatrix       → matrix 4x4 dari engine.js
- *
- * @param {WebGLRenderingContext} gl
- * @param {Object} locations
- * @param {Object} rendererState
- * @param {Object} simulationState
- * @param {Object} cameraState
- */
-export function drawSprites(gl, locations, rendererState, simulationState, cameraState) {
+export function drawSprites(
+  gl,
+  locations,
+  rendererState,
+  simulationState,
+  cameraState,
+) {
   void locations;
 
-  if (!rendererState || !rendererState.sprites) {
-    console.warn('[drawSprites] rendererState.sprites belum tersedia.');
-    return;
-  }
+  const spriteState = rendererState?.sprites;
+  const renderer = spriteState?.rendererInstance;
+  const texture = rendererState?.texture;
+  const matrix = _getViewProjectionMatrix(cameraState);
+  const atlas = _resolveAtlas(rendererState, simulationState);
+  const atlasSize = _resolveAtlasSize(rendererState, simulationState, texture);
 
-  // Bongkar parameter sesuai arsitektur main.js.
-  const { rendererInstance, objects } = rendererState.sprites;
-  const texture = rendererState.texture;
-  const spriteAtlas = simulationState?.atlasData || {};
-  const matrix = cameraState?.viewProjectionMatrix;
-
-  const renderer = rendererInstance;
-  const atlasSize = _resolveAtlasSize(simulationState, spriteAtlas);
-  const globalAlpha = simulationState?.globalAlpha ?? 1.0;
-  const renderObjects = _normalizeSpriteObjects(objects);
-
-  if (!renderer) {
-    console.warn('[drawSprites] rendererInstance belum tersedia.');
-    return;
-  }
+  if (!renderer || !spriteState) return;
 
   if (!texture) {
-    console.warn('[drawSprites] texture belum tersedia di rendererState.texture.');
+    console.warn("[drawSprites] rendererState.texture belum tersedia.");
     return;
   }
 
   if (!matrix || matrix.length !== 16) {
-    console.warn('[drawSprites] cameraState.viewProjectionMatrix harus berupa matrix 4x4 berisi 16 elemen.');
+    console.warn("[drawSprites] cameraState.viewProjectionMatrix tidak valid.");
     return;
   }
 
-  if (!renderObjects || renderObjects.length === 0) return;
+  const staticObjects = _normalizeSpriteObjects(spriteState.objects);
+  const drawItems = [];
 
-  // ── STEP 1: Z-SORT (Painter's Algorithm untuk Isometrik) ────
-  //
-  // Dalam isometrik 2.5D:
-  //  - Objek dengan Y LEBIH BESAR = lebih dekat ke kamera.
-  //  - Harus digambar TERAKHIR agar tampil di atas objek yang lebih jauh.
-  //  - Kunci sort menggunakan "foot point" = y + tinggi sprite.
-  //
-  const sorted = [...renderObjects].sort((a, b) => {
-    const typeA = _getSpriteType(a);
-    const typeB = _getSpriteType(b);
-    const metaA = spriteAtlas[typeA];
-    const metaB = spriteAtlas[typeB];
+  for (const obj of staticObjects) {
+    const item = _makeStaticSpriteDrawItem(obj, atlas);
+    if (item) drawItems.push(item);
+  }
 
-    const footA = (a.y ?? 0) + (metaA ? metaA.h : 0);
-    const footB = (b.y ?? 0) + (metaB ? metaB.h : 0);
+  for (const item of _makeCarriageItems(simulationState, atlas)) {
+    drawItems.push(item);
+  }
 
-    return footA - footB; // ascending: objek jauh dulu, objek dekat belakangan
-  });
+  if (drawItems.length === 0) return;
 
-  // ── STEP 2: Filter objek valid & pastikan kapasitas buffer ──
-  const valid = sorted.filter(obj => {
-    const type = _getSpriteType(obj);
+  // Layer dan sortY menentukan urutan gambar agar occlusion isometric terlihat natural.
+  drawItems.sort((a, b) => a.layer - b.layer || a.sortY - b.sortY);
 
-    if (!type || !spriteAtlas[type]) {
-      console.warn(`[drawSprites] Sprite tidak ditemukan di atlas: "${type}"`);
-      return false;
-    }
+  renderer._ensureCapacity(drawItems.length);
 
-    return true;
-  });
-
-  if (valid.length === 0) return;
-
-  renderer._ensureCapacity(valid.length);
-
-  // ── STEP 3: Build batched vertex data ───────────────────────
-  //
-  // Tiap sprite = 1 quad = 2 segitiga = 6 vertex.
-  // Layout per vertex: [x, y, u, v].
-  //
-  //   TL──TR
-  //   │ ╲  │
-  //   BL──BR
-  //
-  // Segitiga 1: TL, BL, TR
-  // Segitiga 2: TR, BL, BR
-  //
-  const inv = 1.0 / atlasSize;
   const buf = renderer._vertexData;
   let ptr = 0;
 
-  for (const obj of valid) {
-    const type = _getSpriteType(obj);
-    const meta = spriteAtlas[type];
+  for (const item of drawItems) {
+    const uv = _makeAtlasUv(item.meta, atlasSize);
 
-    // Posisi dunia. Kode asal menggunakan x/y sebagai pojok atas-kiri sprite.
-    // Jika data JSON memakai anchor kaki sprite, sesuaikan x/y di tahap data.
-    const wx = obj.x ?? 0;
-    const wy = obj.y ?? 0;
-    const wx2 = wx + meta.w;
-    const wy2 = wy + meta.h;
-
-    // UV Mapping: konversi piksel atlas → 0..1.
-    // Half-texel correction mengurangi risiko bleeding di spritesheet padat.
-    const HALF = 0.5 * inv;
-    const u0 = meta.x * inv + HALF;
-    const u1 = (meta.x + meta.w) * inv - HALF;
-    const v0 = meta.y * inv + HALF;
-    const v1 = (meta.y + meta.h) * inv - HALF;
-
-    // 6 vertex untuk 2 segitiga.
-    // Segitiga 1: TL, BL, TR
-    buf[ptr++] = wx;  buf[ptr++] = wy;  buf[ptr++] = u0; buf[ptr++] = v0; // TL
-    buf[ptr++] = wx;  buf[ptr++] = wy2; buf[ptr++] = u0; buf[ptr++] = v1; // BL
-    buf[ptr++] = wx2; buf[ptr++] = wy;  buf[ptr++] = u1; buf[ptr++] = v0; // TR
-
-    // Segitiga 2: TR, BL, BR
-    buf[ptr++] = wx2; buf[ptr++] = wy;  buf[ptr++] = u1; buf[ptr++] = v0; // TR
-    buf[ptr++] = wx;  buf[ptr++] = wy2; buf[ptr++] = u0; buf[ptr++] = v1; // BL
-    buf[ptr++] = wx2; buf[ptr++] = wy2; buf[ptr++] = u1; buf[ptr++] = v1; // BR
+    ptr = _pushTexturedQuad(
+      buf,
+      ptr,
+      {
+        x0: item.x0,
+        y0: item.y0,
+        x1: item.x1,
+        y1: item.y1,
+        flipX: item.flipX,
+      },
+      uv,
+      item.color,
+      item.effect || 0.0,
+    );
   }
 
-  // ── STEP 4: Upload data ke GPU (DYNAMIC_DRAW) ───────────────
-  const { program, aPosition, aUv, uCamera, uTexture, uAlpha, vbo } = renderer;
-  const vertexCount = valid.length * 6;
+  const vertexCount = drawItems.length * 6;
+  const FLOAT_SIZE = Float32Array.BYTES_PER_ELEMENT;
+  const FLOATS_PER_VERTEX = 9;
+  const STRIDE = FLOATS_PER_VERTEX * FLOAT_SIZE;
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    buf.subarray(0, ptr),
-    gl.DYNAMIC_DRAW
-  );
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-  // ── STEP 5: Setup program & uniforms ────────────────────────
-  gl.useProgram(program);
+  gl.useProgram(renderer.program);
+  gl.uniformMatrix4fv(renderer.uCamera, false, matrix);
+  gl.uniform1f(renderer.uTime, simulationState?.time || 0.0);
+  gl.uniform1f(renderer.uDayNight, simulationState?.dayNight?.progress || 0.0);
 
-  // Matrix kamera 4x4 dari engine.js.
-  gl.uniformMatrix4fv(uCamera, false, matrix);
-
-  // Bind texture ke texture unit 0.
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.uniform1i(uTexture, 0);
+  gl.uniform1i(renderer.uTexture, 0);
 
-  // Alpha global untuk seluruh batch.
-  gl.uniform1f(uAlpha, globalAlpha);
+  gl.bindBuffer(gl.ARRAY_BUFFER, renderer.vbo);
+  gl.bufferData(gl.ARRAY_BUFFER, buf.subarray(0, ptr), gl.DYNAMIC_DRAW);
 
-  // ── STEP 6: Setup attribute pointers ────────────────────────
-  const FLOAT_SIZE = 4;
-  const STRIDE = 4 * FLOAT_SIZE;
+  gl.enableVertexAttribArray(renderer.aPosition);
+  gl.vertexAttribPointer(renderer.aPosition, 2, gl.FLOAT, false, STRIDE, 0);
 
-  gl.enableVertexAttribArray(aPosition);
+  gl.enableVertexAttribArray(renderer.aUv);
   gl.vertexAttribPointer(
-    aPosition,
-    2,          // x, y
+    renderer.aUv,
+    2,
     gl.FLOAT,
     false,
     STRIDE,
-    0
+    2 * FLOAT_SIZE,
   );
 
-  gl.enableVertexAttribArray(aUv);
+  gl.enableVertexAttribArray(renderer.aColor);
   gl.vertexAttribPointer(
-    aUv,
-    2,          // u, v
+    renderer.aColor,
+    4,
     gl.FLOAT,
     false,
     STRIDE,
-    2 * FLOAT_SIZE
+    4 * FLOAT_SIZE,
   );
 
-  // ── STEP 7: SINGLE DRAW CALL untuk semua sprite ─────────────
+  gl.enableVertexAttribArray(renderer.aEffect);
+  gl.vertexAttribPointer(
+    renderer.aEffect,
+    1,
+    gl.FLOAT,
+    false,
+    STRIDE,
+    8 * FLOAT_SIZE,
+  );
+
   gl.drawArrays(gl.TRIANGLES, 0, vertexCount);
 
-  // ── STEP 8: Cleanup ringan ──────────────────────────────────
-  gl.disableVertexAttribArray(aPosition);
-  gl.disableVertexAttribArray(aUv);
+  gl.disableVertexAttribArray(renderer.aPosition);
+  gl.disableVertexAttribArray(renderer.aUv);
+  gl.disableVertexAttribArray(renderer.aColor);
+  gl.disableVertexAttribArray(renderer.aEffect);
+
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
   gl.bindTexture(gl.TEXTURE_2D, null);
 }
 
-// ─────────────────────────────────────────────────────────────
-// SECTION 7 — USAGE EXAMPLE (referensi, bukan dieksekusi)
-// ─────────────────────────────────────────────────────────────
+// ============================================================
+// BAGIAN 9 — LIGHTING OVERLAY SIANG-MALAM
+// ============================================================
+// Kontribusi Dea: overlay pencahayaan siang-malam yang digambar setelah road dan sprite.
 
-/*
-  // Setup yang diharapkan main.js:
-
-  import {
-    setupTexture,
-    setupSpriteGeometry,
-    drawSprites
-  } from './renderer.js';
-
-  // Setelah spritesheet.png selesai dimuat:
-  rendererState.texture = setupTexture(gl, spritesheetImage);
-
-  // Setelah data bangunan/sprite dari data.json tersedia:
-  rendererState.sprites = setupSpriteGeometry(
-    gl,
-    locations,
-    data.buildings
-  );
-
-  // Dalam render loop:
-  beginFrame(gl, cameraState, locations, canvas.width, canvas.height);
-
-  drawSprites(
-    gl,
-    locations,
-    rendererState,
-    simulationState,
-    cameraState
-  );
-
-  // Catatan:
-  // simulationState.atlasData harus berisi metadata atlas:
-  // {
-  //   "menara_benteng": { x: 0, y: 0, w: 256, h: 512 },
-  //   "rumah_kecil":    { x: 256, y: 0, w: 128, h: 192 }
-  // }
-  //
-  // cameraState.viewProjectionMatrix harus dibuat oleh engine.js
-  // sebagai Float32Array berisi 16 elemen.
-*/
-// ─────────────────────────────────────────────────────────────
-// SECTION 8 — WEBGL ROAD WRAPPERS (Jembatan untuk main.js)
-// ─────────────────────────────────────────────────────────────
-
-/**
- * Mengubah data array titik jalan dari JSON menjadi buffer WebGL (VBO).
- * Dipanggil sekali saat inisialisasi oleh main.js.
- */
-export function setupRoadGeometry(gl, locations, roadData) {
-  // 1. Generate Float32Array menggunakan matematika Bezier (lebar jalan = 60)
-  const road = generateBezierRoad(roadData, 16, 60);
-  
-  if (!road || road.vertexCount === 0) {
-    console.warn('[setupRoadGeometry] Data jalan kosong.');
-    return null;
+const LIGHTING_VERT_SRC = `
+  attribute vec2 a_position;
+  varying vec2 v_position;
+  void main() {
+    v_position = a_position;
+    gl_Position = vec4(a_position, 0.0, 1.0);
   }
+`;
 
-  // 2. Buat Buffer WebGL (VBO)
-  const vbo = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.bufferData(gl.ARRAY_BUFFER, road.vertices, gl.STATIC_DRAW);
-  gl.bindBuffer(gl.ARRAY_BUFFER, null);
+const LIGHTING_FRAG_SRC = `
+  precision mediump float;
+  varying vec2 v_position;
+  uniform float u_dayNight;
+  uniform vec2 u_resolution;
 
-  console.log(`[setupRoadGeometry] Geometri jalan siap (${road.vertexCount} vertex).`);
+  void main() {
+    float t = clamp(u_dayNight, 0.0, 1.0);
 
-  // 3. Kembalikan data untuk disimpan di rendererState.roads
-  return {
-    vbo: vbo,
-    vertexCount: road.vertexCount,
-    stride: road.stride
-  };
+    float dusk = smoothstep(0.25, 0.58, t) * (1.0 - smoothstep(0.66, 0.82, t));
+    float night = smoothstep(0.46, 1.0, t);
+
+    float dist = length(v_position * vec2(0.82, 1.0));
+    float vignette = smoothstep(0.40, 1.20, dist);
+
+    vec3 duskColor = vec3(0.90, 0.48, 0.16);
+    vec3 nightColor = vec3(0.03, 0.06, 0.16);
+
+    vec3 color = duskColor;
+    float alpha = dusk * 0.10;
+
+    color = mix(color, nightColor, night);
+    alpha += night * (0.20 + vignette * 0.20);
+
+    gl_FragColor = vec4(color, alpha);
+  }
+`;
+
+class LightingOverlayRenderer {
+  constructor(gl) {
+    this.gl = gl;
+    this.program = _createProgram(
+      gl,
+      LIGHTING_VERT_SRC,
+      LIGHTING_FRAG_SRC,
+      "LightingOverlayRenderer",
+    );
+    this.aPosition = gl.getAttribLocation(this.program, "a_position");
+    this.uDayNight = gl.getUniformLocation(this.program, "u_dayNight");
+    this.uResolution = gl.getUniformLocation(this.program, "u_resolution");
+    this.vbo = gl.createBuffer();
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW,
+    );
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+  }
 }
 
-/**
- * Menggambar jalan ke kanvas menggunakan buffer yang sudah dibuat.
- * Dipanggil 60 kali per detik oleh renderLoop di main.js.
- */
-export function drawRoads(gl, locations, rendererState, cameraState) {
-  const road = rendererState.roads;
-  if (!road || !road.vbo) return;
+export function drawLightingOverlay(gl, locations, rendererState) {
+  void locations;
+  if (!gl || !rendererState) return;
 
-  // 1. Gunakan buffer jalan
-  gl.bindBuffer(gl.ARRAY_BUFFER, road.vbo);
-
-  // 2. Kaitkan atribut posisi (Diasumsikan engine.js menamai atribut posisi 'aPosition')
-  const aPosition = locations.aPosition; 
-  if (aPosition !== undefined && aPosition !== -1) {
-    gl.enableVertexAttribArray(aPosition);
-    // x, y (2 komponen), tipe FLOAT, offset 0
-    gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, road.stride, 0);
+  if (!rendererState.lightingOverlay) {
+    rendererState.lightingOverlay = new LightingOverlayRenderer(gl);
   }
 
-  // 3. Set Matrix Kamera dari engine.js
-  const uMatrix = locations.uViewProjectionMatrix;
-  if (uMatrix !== undefined && uMatrix !== null) {
-    gl.uniformMatrix4fv(uMatrix, false, cameraState.viewProjectionMatrix);
-  }
+  const renderer = rendererState.lightingOverlay;
+  const progress = Math.max(
+    0,
+    Math.min(1, Number(rendererState.dayNightProgress) || 0),
+  );
 
-  // (Opsional) Jika engine.js punya lokasi uColor, set warnanya jadi abu-abu aspal
-  if (locations.uColor !== undefined && locations.uColor !== null) {
-    gl.uniform4f(locations.uColor, 0.4, 0.4, 0.4, 1.0); 
-  }
+  gl.useProgram(renderer.program);
+  gl.bindBuffer(gl.ARRAY_BUFFER, renderer.vbo);
 
-  // 4. Draw Call untuk geometri jalan!
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, road.vertexCount);
+  gl.enableVertexAttribArray(renderer.aPosition);
+  gl.vertexAttribPointer(renderer.aPosition, 2, gl.FLOAT, false, 0, 0);
 
-  // 5. Cleanup
-  if (aPosition !== undefined && aPosition !== -1) {
-    gl.disableVertexAttribArray(aPosition);
-  }
+  if (renderer.uDayNight) gl.uniform1f(renderer.uDayNight, progress);
+  if (renderer.uResolution)
+    gl.uniform2f(renderer.uResolution, gl.canvas.width, gl.canvas.height);
+
+  gl.disable(gl.DEPTH_TEST);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+  gl.enable(gl.DEPTH_TEST);
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
 }
